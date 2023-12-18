@@ -1,0 +1,63 @@
+{% extends 'pharnav.html' %}
+{% load static %}
+{% block content %}
+
+
+  <style>
+ body{
+ background: -webkit-linear-gradient(to right, #383737, #373737);  
+    background: linear-gradient(to bottom, #383737, #373737); 
+    }
+
+
+  </style>
+
+</style>
+<br><br><br><br><br><br>
+{%if products%}
+  <h3 style="text-align:center; color:#ffffff;">{{word}}</h3>
+  <br>
+  
+  <!-- products data start -->
+
+
+  <h5 style="text-align: center; color:white;">Past Patient History</h5>
+  <div class="table-responsive">
+  <table class="table table-primary">
+    <thead class="thead-dark">
+			<tr>
+			  <th scope="col">Doctor</th>
+			  <th scope="col">Patient </th>
+			  <th scope="col">Patient ID</th>
+			  <th scope="col">Date</th>
+			  <th scope="col">time</th>
+			  <th scope="col">Medicine</th>
+			  <th scope="col">Symptoms</th>
+
+			</tr>
+		  </thead>
+		  <tbody>
+
+	  <tbody>
+	  {% for p in products %}
+	  <tr>
+		  <td scope="col">{{p.Doctor1}}</td>
+		  <td scope="col">{{p.Patient1}}</td>
+		  <td scope="col">{{p.Patientno}}</td>
+		  <td scope="col">{{p.date1}}</td>
+		  <td scope="col">{{p.time1}}</td>
+		  <td scope="col">{{p.medicine}}</td>
+		  <td scope="col">{{p.Symptoms}}</td>
+  
+	  </tr>
+	  {% endfor %}
+	  </tbody>
+  </table>
+  </div>
+
+{%else%}
+<h3 style="text-align:center; color:#ffffff;">No Search Found</h3>
+<br><br><br><br><br><br><br><br>
+{%endif%}
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+{% endblock content %}

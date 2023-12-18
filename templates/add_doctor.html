@@ -1,0 +1,90 @@
+{% extends 'admin_nav.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+body{
+  
+  background: -webkit-linear-gradient(to right, #383737, #373737);  
+  background: linear-gradient(to bottom, #383737, #373737); 
+  }
+
+</style>
+<body>
+	{% if error == "no" %}
+     <script>
+	   alert('Please check all field');
+       window.location=("{% url 'view_doctor' %}");
+     </script>
+{% endif %}
+
+{% if error == "yes" %}
+     <script>
+	    alert('Something went wrong, Try Again');
+     </script>
+{% endif %}
+<br><br><br><br><br><br>
+<div class="container">
+	{% for m in messages %}
+<h5>
+	<div class="alert alert-danger mt-4" style="width: 100%;">
+		{{ m }}
+	</div>
+</h5>
+	{% endfor %}
+</div>
+
+			<h1 style="color: #ffffff; text-align: center;">Add Doctors</h1>
+
+				<form action="{% url 'add_doctor' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+					<div class="form-row">
+						<div class="col-md-12">
+							<div class="form-group">
+								<label style="color: #ffffff;" >Doctor Name</label>
+								<input type="text" name="name" class="form-control" placeholder="Enter Doctor Name" required >
+							</div>
+						</div>
+
+                    	<div class="col-12">
+							<div class="form-group">
+								<label style="color: #ffffff;" >Contact Number</label>
+								<input type="text" name="mobile" class="form-control" placeholder="Enter Ten Digit Mobile Number" required min="10" max="10" pattern="[0-9]{10}" >
+							</div>
+						</div>
+						<div class="col-12">
+							<div class="form-group">
+								<label style="color: #ffffff;" >username</label>
+								<input type="text" name="User" class="form-control" placeholder="Enter Ten Digit Mobile Number" required >
+							</div>
+						</div>
+						<div class="col-12">
+							<div class="form-group">
+								<label style="color: #ffffff;" >Email</label>
+								<input type="email" name="mail" class="form-control" placeholder="Enter Ten Digit Mobile Number" required >
+							</div>
+						</div>
+
+						<div class="col-12">
+							<div class="form-group">
+								<label style="color: #ffffff;" >Department</label>
+								<select   name="department" class="form-control">
+									{% for i in b %}
+									<option value="{{i.id}}" >{{i.Department}}</option>
+									{% endfor %}
+								</select>
+							</div>
+							<div class="form-group">
+								<label style="color: #ffffff;" for="exampleDropdownFormPassword1">Choose Image</label>
+								<input type="file" name="image" class="form-control btn" id="exampleDropdownFormPassword1" required >
+							</div>
+						</div>
+
+                      </div>
+
+					<hr>
+					<input type="submit"  value="Submit" class="btn btn-primary" onclick="return confirm('pls check all the field')">
+				</form>
+	
+	<br>
+{% endblock  %}

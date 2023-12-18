@@ -1,0 +1,66 @@
+{% extends 'nav2.html' %}
+{% load static %}
+{% block content %}
+
+
+    <style>
+body{
+  
+  background: -webkit-linear-gradient(to right, #383737, #373737);  
+  background: linear-gradient(to bottom, #383737, #373737); 
+  }
+
+  
+      a:link {
+        text-decoration: none;
+      }
+  
+    
+    </style>
+
+        <br><br><br><br><br><br>
+    <h1 style="color:white;">Search of Past Diagnosis</h1><br>
+  <form class="form-inline" action="{% url "search_view2" %}" method="get">
+    <input class="form-control " type="search" placeholder="Search" name="query" aria-label="Search">
+    <button class="btn btn-outline-success" type="submit">Search</button>
+  </form>
+  {%if products%}
+    <h3 style=" color:#e0e3e6;">{{word}}</h3>
+
+    <h5 style="text-align: center; color:white;">Medicine List</h5>
+    <div class="table-responsive">
+    <table class="table table-primary">
+      <thead class="thead-dark">
+                    <tr>
+                      <th scope="col">Doctor Name</th>
+                      <th scope="col">Patient Name</th>
+                      <th scope="col">Patient ID</th>
+                      <th scope="col">Date</th>
+                      <th scope="col">Time</th>
+                      <th scope="col">Symptoms</th>
+                      <th scope="col">Medicine</th>
+
+                    </tr>
+                  </thead>
+                  <tbody>
+  
+              <tbody>
+              {% for i in products %}
+              <tr>
+                <td  scope="col">{{i.Doctor1}}</td>
+                <td  scope="col">{{i.Patient1}}</td>
+                <td  scope="col">{{i.Patientno}}</td>
+                <td  scope="col">{{i.date1}}</td>
+                <td  scope="col">{{i.time1}}</td>
+                <td  scope="col">{{i.Symptoms}}</td>
+                <td  scope="col">{{i.medicine}}</td>
+                </tr>
+                 {% endfor %}
+              </tbody>
+          </table>
+  {%else%}
+  <h3 style="text-align:center; color:#f8f8f8;">No Search Found</h3>
+  <br><br><br><br><br>
+  {%endif%}
+  <br><br><br><br><br><br><br><br><br><br><br><br>
+{% endblock  %}

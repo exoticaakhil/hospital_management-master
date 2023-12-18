@@ -1,0 +1,61 @@
+{% extends 'admin_nav.html' %}
+{% load static %}
+{% block content %}
+
+  <style>
+body{
+  
+  background: -webkit-linear-gradient(to right, #383737, #373737);  
+  background: linear-gradient(to bottom, #383737, #373737); 
+  }
+</style>
+<br><br><br><br><br><br>
+<div class="navbar-search smallsearch  " style="float: right;">
+	<a href="" style="color: white;">Appointment History</a>
+		<form class="form-inline" action="{% url "search_view" %}" method="get">
+			<input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="query">
+			<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+		  </form>
+</div>
+<br><br><br><br><br>
+<div>
+<h3 style="text-align: center; color:white;">View Appointment</h3>
+
+		
+<div class="table-responsive">
+	<table class="table table-primary">
+		<thead class="thead-dark">
+					<tr>
+					<th scope="col">Doctor Name</th>
+					<th scope="col">Department</th>
+					<th scope="col">Patient Name</th>
+					<th scope="col">Patient ID</th>
+                    <th scope="col">Date</th>
+					<th scope="col">Time</th>
+					<th scope="col">token</th>
+					<th scope="col">Symptoms</th>
+					<th scope="col">Action</th>
+				  </tr>
+				</thead>
+				<tbody>
+
+			<tbody>
+            {% for i in appointment %}
+			<tr>
+				<td>{{i.doctor}}</td>
+				<td>{{i.deparment}}</td>
+				<td>{{i.patient1}}</td>
+				<td>{{i.patientno}}</td>
+				<td>{{i.date1}}</td>
+				<td>{{i.time1}}</td>
+				<td>{{i.token}}</td>
+				<td>{{i.Symptoms}}</td>
+				<td><a href="{% url 'delete_appointment' i.id %}" onclick="return confirm('Are you ready to delete this record ?')" class="btn btn-danger">Delete</a></td>
+			</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+		<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+{% endblock content %}

@@ -1,0 +1,70 @@
+{% extends 'nav2.html' %}
+{% load static %}
+{% block content %}
+
+    <style>
+body{
+  
+  background: -webkit-linear-gradient(to right, #383737, #373737);  
+  background: linear-gradient(to bottom, #383737, #373737); 
+  }
+
+      a:link {
+        text-decoration: none;
+      }
+
+    </style>
+
+  <br><br><br><br><br><br>
+  <h1 style="color:white;">Search of Past Diagnosis</h1><br>
+  <form class="form-inline" action="{% url 'search_view2' %}" method="get">
+    <input class="form-control " type="search" placeholder="Search" name="query" aria-label="Search">
+    <button class="btn btn-outline-success  " type="submit">Search</button>
+  </form>
+  <h1 style="color:white;">Search of Diagnosis</h1><br>
+  <form class="form-inline" action="{% url 'search_view4' %}" method="get">
+    <input class="form-control mr-2" type="search" placeholder="Search" name="query" aria-label="Search" >
+    <button class="btn btn-outline-success my-2 my-0" type="submit" >Search</button>
+  </form>
+
+  <h5 style="text-align: center; color:white;">Appoiments</h5>
+  <div class="table-responsive">
+  <table class="table table-primary">
+    <thead class="thead-dark">
+                      <tr>
+                        <th scope="col">Doctor Name</th>
+                        <th scope="col">Patient Name</th>
+                        <th scope="col">Specialization</th>
+                        <th scope="col">Patient_id</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Time</th>
+                        <th scope="col">token</th>
+                        <th scope="col">Symptoms</th>
+                        <th scope="col" colspan="2">Action</th>
+                      </tr>
+                    </thead>
+              
+                    <tbody>
+                          {% for i in products %}
+                    <tr>
+                      <td>{{i.doctor.name}}</td>
+                      <td>{{i.patient1.name}}</td>
+                      <td>{{i.deparment}}</td>
+                      <td>{{i.patientno}}</td>
+                      <td>{{i.date1}}</td>
+                      <td>{{i.time1}}</td>
+                      <td>{{i.token}}</td>
+                      <td>{{i.Symptoms}}</td>
+                    <td><a href="{% url 'editpatient' i.id %}" onclick="return confirm('diagnosis ?')" class="btn btn-danger">Diagnosis</a></td>
+                    <td><a href="{% url 'delete2' i.id %}" onclick="return confirm('Delete the Appoiment ?')" class="btn btn-danger">Delete</a></td>
+                   
+                  </tr>
+                   {% endfor %}
+                </tbody>
+		</table>
+  </table>
+
+<br><br><br><br><br><br><br><br>
+
+
+{% endblock content %}

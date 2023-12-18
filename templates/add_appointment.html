@@ -1,0 +1,125 @@
+{% extends 'admin_nav.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+body{
+  
+  background: -webkit-linear-gradient(to right, #383737, #373737);  
+  background: linear-gradient(to bottom, #383737, #373737); 
+  }
+
+</style>
+<body>
+{% if error == "no" %}
+     <script>
+	   alert(' Appoiment has taken');
+       window.location=("{% url 'view_appointment' %}");
+     </script>
+{% endif %}
+
+{% if error == "yes" %}
+     <script>
+	    alert('Something went wrong, Try Again');
+     </script>
+{% endif %}
+
+
+<div>
+	<br><br><br><br><br><br>
+<h1 style="color: #ffffff; text-align: center;">Add Appoiment</h1>
+             
+				<form method="post">
+                    {% csrf_token %}
+					<div class="form-row">
+
+						<div class="col-12">
+							<div class="form-group">
+								<label style="color: #ffffff;">Doctor Name</label>
+								<select  name="doctor" class="form-control" id="doctorDropdown">
+									{% for i in doctor %}
+									<option value="{{i.id}}" data-department-id="{{ i.deparment.Department }}">{{i.name}}</option>
+									{% endfor %}
+								</select>
+							</div> 
+						</div>
+						<div class="col-12">
+							<div class="form-group">
+								<label style="color: #ffffff;" >Department</label><br>
+								<input type="text"   id="departmentTextBox" name="department" readonly class="col-12">
+
+								<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+								<script>
+									$(document).ready(function () {
+										$('#doctorDropdown').change(function () {
+											var selectedDoctor = $('#doctorDropdown option:selected');
+											var departmentId = selectedDoctor.data('department-id');
+											$('#departmentTextBox').val(departmentId);
+										});
+									});
+								</script>
+							</div>
+						</div>
+
+<div class="col-12">
+    <div class="form-group">
+        <label style="color: #ffffff;">Patient Name</label>
+        <select name="patient" class="form-control" id="patientDropdown">
+            {% for i in patient %}
+            <option value="{{i.id}}" data-patient-id="{{ i.id }}">{{i.name}}</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+
+<div class="col-12">
+    <div class="form-group">
+        <label style="color: #ffffff;">Patient id</label><br>
+        <input type="text" id="patientIdTextBox" name="patientid" readonly class="col-12">
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#patientDropdown').change(function () {
+            var selectedPatient = $('#patientDropdown option:selected');
+            var patientId = selectedPatient.data('patient-id');
+			var prefixedPatientId = 'op' + patientId; 
+            $('#patientIdTextBox').val(prefixedPatientId);
+        });
+    });
+</script>
+
+						
+						<div class="col-12">
+							<div class="form-group">
+								<label style="color: #ffffff;" >Date</label>
+								<input type="date" name="date" class="form-control" required >
+							</div>
+						</div>
+
+						<div class="col-12">
+							<div class="form-group">
+								<label style="color: #ffffff;" >Symptoms</label>
+								<input type="text" name="Sym" class="form-control" required >
+							</div>
+						</div>
+
+                        <div class="col-12">
+							<div class="form-group">
+								<label style="color: #ffffff;">Time</label>
+								<input type="time" name="time" class="form-control" required >
+							</div>
+						</div>
+
+                    </div>
+					<hr>
+					<input type="submit" value="Submit" class="btn btn-primary">
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<br>
+{% endblock content %}

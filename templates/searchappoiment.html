@@ -1,0 +1,67 @@
+{% extends 'admin_nav.html' %}
+{% load static %}
+{% block content %}
+
+
+  <style>
+body{
+  
+  background: -webkit-linear-gradient(to right, #383737, #373737);  
+  background: linear-gradient(to bottom, #383737, #373737); 
+  }
+</style>
+<br><br><br><br>
+{%if products%}
+  <h3 style="text-align:center; color:#f6f9fd;">{{word}}</h3>
+  <br>
+  
+  <!-- products data start -->
+
+
+	<div class="table-responsive">
+		<table class="table table-primary">
+			<thead class="thead-dark">
+				  <tr>
+					<th scope="col">Doctor</th>
+					<th scope="col">Department</th>
+					<th scope="col">Patient </th>
+					<th scope="col">Patient id </th>
+                    <th scope="col">Date</th>
+					<th scope="col">Time</th>
+					<th scope="col">token</th>
+					<th scope="col">Symptoms</th>
+
+				  </tr>
+				</thead>
+				<tbody>
+
+			<tbody>
+            {% for p in products %}
+			<tr>
+				<td>{{p.doctor}}</td>
+				<td>{{p.deparment}}</td>
+				<td>{{p.patient1}}</td>
+				<td>{{p.patientno}}</td>
+				<td>{{p.date1}}</td>
+				<td>{{p.time1}}</td>
+				<td>{{p.token}}</td>
+				<td>{{p.Symptoms}}</td>
+		
+			</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	 </div>
+
+
+
+{%else%}
+
+<h3 style="text-align:center; color:#fbfbfc;">No Search Found</h3>
+<br><br><br><br>
+{%endif%}
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+
+{% endblock content %}

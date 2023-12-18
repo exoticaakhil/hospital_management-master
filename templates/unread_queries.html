@@ -1,0 +1,46 @@
+{% extends 'admin_nav.html' %}
+{% load static %}
+{% block content %}
+
+
+  <style>
+
+body{
+  
+  background: -webkit-linear-gradient(to right, #383737, #373737);  
+  background: linear-gradient(to bottom, #383737, #373737); 
+  }
+
+</style>
+
+<br><br><br><br><br><br>
+
+        <h3 style="text-align: center; color:white;">unread queries </h3>
+		<div class="table-responsive">
+		<table class="table table-primary">
+			<thead class="thead-dark">
+                                    <tr>
+                                        <th class="text-center">S.No</th>
+                                        <th class="d-none d-table-cell">Name</th>
+                                        <th class="d-none d-table-cell">Email ID</th>
+                                        <th class="d-none d-table-cell">Contact Number</th>
+                                        <th class="d-none d-table-cell">Action</th>
+                                    </tr>
+                                </thead>
+                                {% for i in contact %}
+                                <tbody>
+                                    <tr>
+                                        <td class="text-center">{{forloop.counter}}</td>
+                                        <td class="font-w600">{{i.name}}</td>
+                                        <td class="font-w600">{{i.email}}</td>
+                                        <td class="font-w600">{{i.contact}}</td>
+                                        <td class="font-w600"><a href="{% url 'view_queries' i.id %}" class="text-primary">View Details</a></td>
+                                    </tr>
+                                        {% endfor %}
+                                </tbody>
+            </table>
+ 
+    </div>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+{% endblock content %}
+

@@ -1,0 +1,34 @@
+{% extends 'admin_nav.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+body{
+  
+  background: -webkit-linear-gradient(to right, #383737, #373737);  
+  background: linear-gradient(to bottom, #383737, #373737); 
+  }
+</style>
+
+<br><br><br><br><br><br>
+<h1 style="text-align: center; color:white;">View Department</h1>
+<div class="table-responsive">
+<table class="table table-primary">
+	<thead class="thead-dark">
+				<tr>
+					<th scope="col">Depatment</th>
+                    <th scope="col">Action</th>
+				</tr>
+			</thead>
+
+			<tbody>
+            {% for i in doc %}
+			<tr>
+				<td>{{i.Department}}</td>
+				<td><a href="{% url 'Delete_department' i.id %}" onclick="return confirm('Are you ready to delete this record ?')" class="btn btn-danger">Delete</a></td>
+			</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+		<br><br><br><br><br><br><br><br><br><br>
+{% endblock content %}

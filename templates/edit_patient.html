@@ -1,0 +1,90 @@
+{% extends 'admin_nav.html' %}
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <script src="https://kit.fontawesome.com/0b1b56eff4.js" crossorigin="anonymous"></script>
+<style>
+	body{
+ 
+ background: -webkit-linear-gradient(to right, #383737, #373737);  
+ background: linear-gradient(to bottom, #383737, #373737); 
+ }
+
+</style>
+<body>
+{% if error == "no" %}
+     <script>
+	   alert('Patient Record has been Updated');
+       window.location=("{% url 'view_patient' %}");
+     </script>
+{% endif %}
+
+{% if error == "yes" %}
+     <script>
+	    alert('Something went wrong, Try Again');
+     </script>
+{% endif %}
+
+<br><br><br><br>
+<h1 style="color: #ffffff; text-align: center;">edit patient</h1>
+             <br>
+				<form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+					<div class="form-row">
+
+						<div class="col-12">
+							<div class="form-group">
+								<label style="color: white;">Patient Name</label>
+								<input type="text" name="name" class="form-control" value="{{patient.name}}" required >
+							</div>
+						</div>
+
+                    	<div class="col-12">
+							<div class="form-group">
+								<label style="color: white;" >Mobile Number</label>
+								<input type="text" name="mobile" class="form-control" value="{{patient.mobile}}" required >
+							</div>
+						</div>
+
+						<div class="col-12">
+							<div class="form-group">
+								<label style="color: white;">Gender</label>
+								{% if patient.gender == "Male" %}
+								<h5 style="color: #ffffff;"><input type="radio" name="gender" value="Male" checked > Male</h5>
+								<h5 style="color: #ffffff;"><input type="radio" name="gender" value="Female" > Female</h5>
+								{% endif %}
+
+								{% if patient.gender == "Female" %}
+								<h5 style="color: #ffffff;"><input type="radio" name="gender" value="Male" > Male</h5>
+								<h5 style="color: #ffffff;"><input type="radio" name="gender" value="Female" checked > Female</h5>
+								{% endif %}
+
+							</div>
+						</div>
+						<div class="col-12">
+							<div class="form-group">
+								<label style="color: white;" >Address</label>
+                                <textarea  name="address" class="form-control">{{patient.address}}</textarea>
+							</div>
+						</div>
+						<div class="col-12">
+							<div class="form-group">
+								<label style="color: white;" for="">Image</label><br>
+								<img src="{{patient.image.url}}" alt="" width="200">
+								
+								<input  type="file" name="image" id="" accept="image/*" class="form-control">
+							</div>
+						</div>
+					
+					<input type="submit" value="Update" class="btn btn-primary">
+					</div>
+				</form>
+
+	<br><br><br><br><br>
+
+{% endblock content %}

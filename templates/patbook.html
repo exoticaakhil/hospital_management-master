@@ -1,0 +1,91 @@
+{% extends 'nav1.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+body{
+  
+  background: -webkit-linear-gradient(to right, #383737, #373737);  
+  background: linear-gradient(to bottom, #383737, #373737); 
+  }
+</style>
+<body>
+    <br><br><br><br>
+<h1 style="color: #ffffff; text-align: center;">Add Appoiment</h1>
+<br>
+<form action="{% url 'addappointment' %}" method="post">
+	   {% csrf_token %}
+	   <div class="form-row">
+
+		   <div class="col-12">
+			   <div class="form-group">
+				   <label style="color: #ffffff;">Doctor Name</label>
+					<select  name="doctor" class="form-control" id="doctorDropdown">
+						{% for i in doctor %}
+						<option value="{{i.id}}" data-department-id="{{ i.deparment.Department }}">{{i.name}}</option>
+						{% endfor %}
+					</select>
+					<br>
+					
+		   </div>
+		   </div>
+		   <div class="col-sm-12">
+			<div class="form-group">
+				<label style="color: #ffffff;">Department</label>
+		<input type="text" name="department" id="departmentTextBox" readonly>
+	</div>
+</div>
+		<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+		<script>
+			$(document).ready(function () {
+				$('#doctorDropdown').change(function () {
+					var selectedDoctor = $('#doctorDropdown option:selected');
+					var departmentId = selectedDoctor.data('department-id');
+					$('#departmentTextBox').val(departmentId);
+				});
+			});
+		</script>
+
+		   <div class="col-sm-12">
+			<div class="form-group">
+				<label style="color: #ffffff;">Patient Name</label>
+				<input type="text" name="patient" value="{{patient.name}}" class="form-control" required>
+			</div>
+		</div>
+		<div class="col-sm-12">
+			<div class="form-group">
+				<label style="color: #ffffff;">Patient Id</label>
+				<input type="text" name="patientid" value="op{{patient.id}}"   class="form-control" >
+			</div>
+		</div>
+
+		   
+		   <div class="col-12">
+			   <div class="form-group">
+				   <label style="color: #ffffff;" >Date</label>
+				   <input type="date" name="date" class="form-control" required >
+			   </div>
+		   </div>
+
+		   <div class="col-12">
+			   <div class="form-group">
+				   <label style="color: #ffffff;" >Symptoms</label>
+				   <input type="text" name="Sym" class="form-control" required >
+			   </div>
+		   </div>
+
+		   <div class="col-12">
+			   <div class="form-group">
+				   <label style="color: #ffffff;">Time</label>
+				   <input type="time" name="time" class="form-control" required >
+			   </div>
+		   </div>
+
+	   </div>
+	   <hr>
+	   <input type="submit" value="Submit" class="btn btn-primary">
+   </form>
+</div>
+</div>
+</div>
+{% endblock content %}

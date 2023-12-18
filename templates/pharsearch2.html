@@ -1,0 +1,64 @@
+{% extends 'pharnav.html' %}
+{% load static %}
+{% block content %}
+
+  <style>
+ body{
+ background: -webkit-linear-gradient(to right, #383737, #373737);  
+    background: linear-gradient(to bottom, #383737, #373737); 
+    }
+
+
+  </style>
+
+</style>
+<br><br><br><br><br><br>
+{%if products%}
+  <h3 style="text-align:center; color:#f7f8fa;">{{word}}</h3>
+  <br>
+  
+  <!-- products data start -->
+
+
+  <h5 style="text-align: center; color:white;">Medicine List</h5>
+  <div class="table-responsive">
+  <table class="table table-primary">
+    <thead class="thead-dark">
+                            <tr>
+                                <th  scope="col" >S.No</th>
+                                <th  scope="col">Doctor</th>
+                                <th  scope="col">Patient</th>
+                                <th  scope="col">Patient ID</th>
+                                <th  scope="col">Date</th>
+                                <th  scope="col">Time</th>
+                                <th  scope="col">Symptoms</th>
+                                <th  scope="col">Medicine</th>
+                                <th  scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        {% for i in products %}
+                        <tbody>
+                            <tr>
+                                <td scope="col" >{{forloop.counter}}</td>
+                                <td  scope="col">{{i.Doctor1}}</td>
+                                <td  scope="col">{{i.Patient1}}</td>
+                                <td  scope="col">{{i.Patientno}}</td>
+                                <td  scope="col">{{i.date1}}</td>
+                                <td  scope="col">{{i.time1}}</td>
+                                <td  scope="col">{{i.Symptoms}}</td>
+                                <td  scope="col">{{i.medicine}}</td>
+                                <td  scope="col"><a href="{% url 'Delete_pharmacy' i.id %}" class="text-primary">Delete</a></td>
+                            </tr>
+                                {% endfor %}
+                        </tbody>
+    </table>
+	
+  </div>
+
+{%else%}
+<h3 style="text-align:center; color:#ffffff;">No Search Found</h3>
+<br><br><br><br><br><br><br><br>
+
+{%endif%}
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+{% endblock content %}
