@@ -1,90 +1,372 @@
+
 {% extends 'admin_nav.html' %}
 {% load static %}
 {% block content %}
-<html>
-<head>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
-  <script src="https://kit.fontawesome.com/0b1b56eff4.js" crossorigin="anonymous"></script>
-</head>
+
 <style>
-	body{
- 
- background: -webkit-linear-gradient(to right, #383737, #373737);  
- background: linear-gradient(to bottom, #383737, #373737); 
- }
+    .edit-doctor-page {
+        min-height: calc(100vh - 80px);
+        padding: 30px 20px 45px;
+        background: linear-gradient(135deg, #f0f4ff, #f8fafc);
+        color: #1e293b;
+    }
 
+    .edit-doctor-container {
+        max-width: 850px;
+        margin: 0 auto;
+    }
+
+    .edit-doctor-heading {
+        margin-bottom: 25px;
+    }
+
+    .edit-doctor-heading h2 {
+        font-size: 28px;
+        font-weight: 750;
+        color: #172554;
+        margin: 0 0 8px;
+    }
+
+    .edit-doctor-heading p {
+        color: #64748b;
+        margin: 0;
+        font-size: 14px;
+    }
+
+    .edit-doctor-card {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.07);
+    }
+
+    .edit-doctor-card-header {
+        padding: 22px 28px;
+        background: linear-gradient(120deg, #1e3a8a, #2563eb);
+        color: #fff;
+    }
+
+    .edit-doctor-card-header h4 {
+        margin: 0 0 5px;
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .edit-doctor-card-header p {
+        margin: 0;
+        font-size: 13px;
+        color: #dbeafe;
+    }
+
+    .edit-doctor-card-body {
+        padding: 28px;
+    }
+
+    .doctor-form-group {
+        margin-bottom: 22px;
+    }
+
+    .doctor-form-group label {
+        display: block;
+        margin-bottom: 9px;
+        font-size: 13px;
+        font-weight: 700;
+        color: #334155;
+    }
+
+    .doctor-form-group label i {
+        color: #2563eb;
+        margin-right: 7px;
+        width: 15px;
+    }
+
+    .doctor-form-control {
+        width: 100%;
+        min-height: 45px;
+        padding: 11px 13px;
+        border: 1px solid #cbd5e1;
+        border-radius: 9px;
+        background: #fff;
+        color: #1e293b;
+        font-size: 14px;
+        outline: none;
+        transition: border-color .2s, box-shadow .2s;
+    }
+
+    .doctor-form-control:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, .12);
+    }
+
+    .doctor-image-section {
+        padding: 18px;
+        background: #f8fafc;
+        border: 1px dashed #cbd5e1;
+        border-radius: 12px;
+    }
+
+    .doctor-current-image {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 18px;
+    }
+
+    .doctor-current-image img {
+        width: 86px;
+        height: 86px;
+        object-fit: cover;
+        border-radius: 14px;
+        border: 3px solid #fff;
+        box-shadow: 0 3px 12px rgba(15, 23, 42, .12);
+    }
+
+    .doctor-current-image strong {
+        display: block;
+        font-size: 14px;
+        color: #1e293b;
+        margin-bottom: 5px;
+    }
+
+    .doctor-current-image span {
+        color: #64748b;
+        font-size: 12px;
+    }
+
+    .doctor-form-actions {
+        display: flex;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        gap: 12px;
+        padding-top: 22px;
+        margin-top: 10px;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .doctor-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 43px;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 9px;
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none !important;
+        cursor: pointer;
+        transition: all .2s ease;
+    }
+
+    .doctor-btn-primary {
+        background: #2563eb;
+        color: #fff !important;
+    }
+
+    .doctor-btn-primary:hover {
+        background: #1d4ed8;
+        transform: translateY(-1px);
+    }
+
+    .doctor-btn-secondary {
+        background: #f1f5f9;
+        color: #475569 !important;
+    }
+
+    .doctor-btn-secondary:hover {
+        background: #e2e8f0;
+    }
+
+    .doctor-alert {
+        border: none;
+        border-radius: 10px;
+        padding: 14px 18px;
+        margin-bottom: 20px;
+        font-size: 14px;
+    }
+
+    @media (max-width: 576px) {
+        .edit-doctor-page {
+            padding: 22px 12px 35px;
+        }
+
+        .edit-doctor-heading h2 {
+            font-size: 24px;
+        }
+
+        .edit-doctor-card-header,
+        .edit-doctor-card-body {
+            padding: 20px;
+        }
+
+        .doctor-form-actions {
+            flex-direction: column-reverse;
+        }
+
+        .doctor-btn {
+            width: 100%;
+        }
+    }
 </style>
-<body>
-{% if error == "no" %}
-     <script>
-	   alert('Doctor Record has been Updated');
-       window.location=("{% url 'view_doctor' %}");
-     </script>
-{% endif %}
 
-{% if error == "yes" %}
-     <script>
-	    alert('Something went wrong, Try Again');
-     </script>
-{% endif %}
+<div class="edit-doctor-page">
+    <div class="edit-doctor-container">
 
-<br><br><br><br>
+        {% if error == "no" %}
+        <div class="alert alert-success doctor-alert" role="alert">
+            <i class="fas fa-check-circle mr-2"></i>
+            Doctor record updated successfully.
+        </div>
+        <script>
+            window.location.replace("{% url 'view_doctor' %}");
+        </script>
+        {% endif %}
 
-<h1 style="color: #ffffff; text-align: center;">Edit Doctors</h1>
-             <br>
-			
-				<form method="post" enctype="multipart/form-data">
+        {% if error == "yes" %}
+        <div class="alert alert-danger doctor-alert" role="alert">
+            <i class="fas fa-exclamation-circle mr-2"></i>
+            Something went wrong. Please check the details and try again.
+        </div>
+        {% endif %}
+
+        <div class="edit-doctor-heading">
+            <h2><i class="fas fa-user-edit mr-2"></i>Edit Doctor</h2>
+            <p>Update the doctor's personal information, specialization and profile image.</p>
+        </div>
+
+        <div class="edit-doctor-card">
+            <div class="edit-doctor-card-header">
+                <h4><i class="fas fa-user-md mr-2"></i>Doctor Information</h4>
+                <p>Modify the details below and save your changes.</p>
+            </div>
+
+            <div class="edit-doctor-card-body">
+                <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
-					<div class="form-row">
 
-						<div class="col-12">
-							<div class="form-group">
-								<label style="color: #ffffff;" >Doctor Name</label>
-								<input  type="text" name="name" class="form-control" value="{{doctor.name}}" required>
-							</div>
-						</div>
+                    <div class="doctor-form-group">
+                        <label for="doctorName">
+                            <i class="fas fa-user"></i>Doctor Name
+                        </label>
+                        <input
+                            type="text"
+                            id="doctorName"
+                            name="name"
+                            class="doctor-form-control"
+                            value="{{ doctor.name }}"
+                            placeholder="Enter doctor's full name"
+                            maxlength="150"
+                            required>
+                    </div>
 
-                    	<div class="col-12">
-							<div class="form-group">
-								<label style="color: #ffffff; ">Contact Number</label>
-								<input  type="text" name="mobile" class="form-control" value="{{doctor.mobile}}" required>
-							</div>
-						</div>
+                    <div class="doctor-form-group">
+                        <label for="doctorMobile">
+                            <i class="fas fa-phone"></i>Contact Number
+                        </label>
+                        <input
+                            type="tel"
+                            id="doctorMobile"
+                            name="mobile"
+                            class="doctor-form-control"
+                            value="{{ doctor.mobile }}"
+                            placeholder="Enter contact number"
+                            maxlength="20"
+                            required>
+                    </div>
 
-						<div class="col-12">
-							<div class="form-group">
-								<label style="color: #ffffff;" >Specialization</label>
-								<select name="department" class="form-control" >      
+                    <div class="doctor-form-group">
+                        <label for="doctorDepartment">
+                            <i class="fas fa-stethoscope"></i>Specialization
+                        </label>
+                        <select
+                            id="doctorDepartment"
+                            name="department"
+                            class="doctor-form-control"
+                            required>
+                            <option value="">Select specialization</option>
 
-									{% for i in b %}
-									 {% if i.id == doctor.deparment_id %}
-									 <option value="{{i.id}}" selected>{{i.Department}}</option>
-									 {% else %}									
-									<option value="{{i.id}}">{{i.Department}}</option>
-									 {% endif %}
-									{% endfor %}
-								</select>
-							</div>
-						</div>
-						<div class="col-12">
-							<div class="form-group">
-								<label  style="color: #ffffff;" for="">Image</label><br>
-								<img src="{{doctor.image.url}}" alt="" width="100" height="100">
-								
-								<input  type="file" name="image" id="" accept="image/*" class="form-control">
-							</div>
-						</div>
+                            {% for i in b %}
+                                <option value="{{ i.id }}"
+                                    {% if i.id == doctor.deparment_id %}selected{% endif %}>
+                                    {{ i.Department }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
 
-                      </div>
+                    <div class="doctor-form-group">
+                        <label for="doctorImage">
+                            <i class="fas fa-camera"></i>Profile Image
+                        </label>
 
-					<hr>
-					<input type="submit" value="Update" class="btn btn-primary" >
-				</form>
-	<br><br><br><br><br>
-</body>
-</html>
+                        <div class="doctor-image-section">
+                            <div class="doctor-current-image">
+                                {% if doctor.image %}
+                                    <img
+                                        id="currentDoctorImage"
+                                        src="{{ doctor.image.url }}"
+                                        alt="Current doctor profile image">
+                                {% else %}
+                                    <img
+                                        id="currentDoctorImage"
+                                        src="{% static 'images/default-doctor.png' %}"
+                                        alt="Default doctor profile image">
+                                {% endif %}
+
+                                <div>
+                                    <strong>Current profile image</strong>
+                                    <span>Choose a new image below to replace it.</span>
+                                </div>
+                            </div>
+
+                            <input
+                                type="file"
+                                id="doctorImage"
+                                name="image"
+                                accept="image/*"
+                                class="doctor-form-control">
+
+                            <small class="text-muted d-block mt-2">
+                                Leave empty to keep the existing image.
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="doctor-form-actions">
+                        <a href="{% url 'view_doctor' %}"
+                           class="doctor-btn doctor-btn-secondary">
+                            <i class="fas fa-arrow-left"></i>Cancel
+                        </a>
+
+                        <button type="submit"
+                                class="doctor-btn doctor-btn-primary">
+                            <i class="fas fa-save"></i>Update Doctor
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const fileInput = document.getElementById('doctorImage');
+        const previewImage = document.getElementById('currentDoctorImage');
+
+        if (fileInput && previewImage) {
+            fileInput.addEventListener('change', function () {
+                const file = this.files && this.files[0];
+
+                if (file && file.type.startsWith('image/')) {
+                    previewImage.src = URL.createObjectURL(file);
+                }
+            });
+        }
+    });
+</script>
+
 {% endblock content %}

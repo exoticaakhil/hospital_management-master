@@ -1,68 +1,450 @@
+
 {% extends 'admin_nav.html' %}
 {% load static %}
 {% block content %}
 
-
 <style>
-body{
-  
-  background: -webkit-linear-gradient(to right, #383737, #373737);  
-  background: linear-gradient(to bottom, #383737, #373737); 
-  }
+    .notification-page {
+        min-height: 100vh;
+        padding: 30px 24px;
+        background: linear-gradient(135deg, #f1f5f9, #e8eef8);
+        font-family: 'Segoe UI', sans-serif;
+    }
 
+    .notification-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 18px;
+        margin-bottom: 25px;
+    }
+
+    .notification-heading h2 {
+        color: #172554;
+        font-size: 28px;
+        font-weight: 750;
+        margin-bottom: 7px;
+    }
+
+    .notification-heading p {
+        color: #64748b;
+        font-size: 14px;
+        margin: 0;
+    }
+
+    .pending-count {
+        display: inline-block;
+        margin-top: 12px;
+        padding: 7px 13px;
+        border-radius: 20px;
+        background: #fef3c7;
+        color: #92400e;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .notification-search {
+        position: relative;
+        min-width: 250px;
+    }
+
+    .notification-search i {
+        position: absolute;
+        left: 14px;
+        top: 15px;
+        color: #94a3b8;
+    }
+
+    .notification-search input {
+        width: 100%;
+        padding: 12px 14px 12px 40px;
+        border: 1px solid #dbe3ef;
+        border-radius: 12px;
+        outline: none;
+        background: #fff;
+    }
+
+    .notification-search input:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, .12);
+    }
+
+    .notification-card {
+        background: #fff;
+        border: 1px solid #e8edf5;
+        border-radius: 18px;
+        box-shadow: 0 8px 30px rgba(15, 23, 42, .07);
+        overflow: hidden;
+    }
+
+    .notification-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 20px 22px;
+        border-bottom: 1px solid #edf1f7;
+    }
+
+    .notification-card-header h5 {
+        color: #1e293b;
+        font-size: 17px;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .notification-table {
+        width: 100%;
+        min-width: 1000px;
+        border-collapse: collapse;
+        margin: 0;
+    }
+
+    .notification-table thead th {
+        padding: 16px 14px;
+        background: #f8fafc;
+        color: #64748b;
+        font-size: 11px;
+        font-weight: 750;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        border: none;
+        white-space: nowrap;
+    }
+
+    .notification-table tbody td {
+        padding: 15px 14px;
+        color: #475569;
+        font-size: 13px;
+        vertical-align: middle;
+        border-top: 1px solid #edf1f7;
+    }
+
+    .notification-table tbody tr:hover {
+        background: #f8fbff;
+    }
+
+    .doctor-profile {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 150px;
+    }
+
+    .doctor-profile img,
+    .doctor-placeholder {
+        width: 43px;
+        height: 43px;
+        min-width: 43px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #e2e8f0;
+    }
+
+    .doctor-placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #dbeafe;
+        color: #1d4ed8;
+        font-size: 18px;
+    }
+
+    .doctor-name {
+        color: #1e293b;
+        font-weight: 700;
+    }
+
+    .doctor-id {
+        display: inline-block;
+        padding: 6px 9px;
+        background: #e0f2fe;
+        color: #0369a1;
+        border-radius: 7px;
+        font-weight: 700;
+    }
+
+    .specialization-badge {
+        display: inline-block;
+        padding: 6px 10px;
+        background: #ede9fe;
+        color: #6d28d9;
+        border-radius: 7px;
+        font-size: 12px;
+        font-weight: 650;
+        white-space: nowrap;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .approve-btn,
+    .reject-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 9px 12px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        text-decoration: none;
+        white-space: nowrap;
+        transition: .2s ease;
+    }
+
+    .approve-btn {
+        background: #dcfce7;
+        color: #15803d;
+        border: 1px solid #bbf7d0;
+    }
+
+    .approve-btn:hover {
+        background: #16a34a;
+        border-color: #16a34a;
+        color: #fff;
+        text-decoration: none;
+    }
+
+    .reject-btn {
+        background: #fee2e2;
+        color: #b91c1c;
+        border: 1px solid #fecaca;
+    }
+
+    .reject-btn:hover {
+        background: #dc2626;
+        border-color: #dc2626;
+        color: #fff;
+        text-decoration: none;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 55px 20px !important;
+    }
+
+    .empty-state i {
+        display: block;
+        font-size: 45px;
+        color: #cbd5e1;
+        margin-bottom: 15px;
+    }
+
+    .empty-state h5 {
+        color: #334155;
+        font-weight: 750;
+    }
+
+    .empty-state p {
+        color: #94a3b8;
+        margin-bottom: 0;
+    }
+
+    .no-results {
+        display: none;
+        padding: 25px;
+        text-align: center;
+        color: #64748b;
+    }
+
+    .notification-footer {
+        padding: 15px 22px;
+        color: #94a3b8;
+        font-size: 12px;
+        border-top: 1px solid #edf1f7;
+    }
+
+    @media (max-width: 768px) {
+        .notification-page {
+            padding: 20px 12px;
+        }
+
+        .notification-heading h2 {
+            font-size: 23px;
+        }
+
+        .notification-search {
+            width: 100%;
+            min-width: 0;
+        }
+
+        .notification-card-header {
+            padding: 16px;
+        }
+    }
 </style>
+
 {% if error == "no" %}
-     <script>
-	   alert('approved');
-       window.location=("{% url  'view_doctor' %}");
-     </script>
+<script>
+    alert('Doctor approved successfully.');
+    window.location.href = "{% url 'view_doctor' %}";
+</script>
 {% endif %}
 
 {% if error == "yes" %}
-     <script>
-	    alert('Something went wrong, Try Again');
-     </script>
+<script>
+    alert('Something went wrong. Please try again.');
+</script>
 {% endif %}
 
-<br><br><br><br><br><br>
+<div class="notification-page">
 
+    <div class="notification-header">
+        <div class="notification-heading">
+            <h2>
+                <i class="fas fa-user-clock"></i>
+                Doctor Approval Notifications
+            </h2>
+            <p>Review pending doctor registrations and manage approval requests.</p>
 
-  
-  
-  
-		  <h3 style="text-align: center; color:white;">Notification </h3>
-		  <div class="table-responsive">
-		  <table class="table table-primary">
-			  <thead class="thead-dark">
-				<tr>
-					<th scope="col">ID</th>
-					<th scope="col">Doctor Name</th>
-					<th scope="col">Contact</th>
-					<th scope="col">Specialization</th>
-					<th scope="col">username</th>
-					<th scope="col">email</th>
-					<th scope="col">image</th>
-                    <th scope="col" colspan="2">Action</th>
-				</tr>
-			</thead>
-				</tr>
-			</thead>
+            <span class="pending-count">
+                <i class="fas fa-hourglass-half"></i>
+                {{ pat|length }} Pending Request{{ pat|length|pluralize }}
+            </span>
+        </div>
 
-			<tbody>
-            {% for i in pat %}
-			<tr>
-				<td>{{i.id}}</td>
-				<td>{{i.name}}</td>
-				<td>{{i.mobile}}</td>
-				<td>{{i.deparment.Department}}</td>
-				<td>{{i.username}}</td>
-				<td>{{i.email}}</td>
-				<td><img src="{{i.image.url}}" width="70"></td>
-				<td><a href="{% url 'approve' i.id  %}" class="btn btn-primary">Approve</a> 
-				<td><a href="{% url 'delete_patient1' i.id %}" onclick="return confirm('Are you ready to delete this record ?')" class="btn btn-danger">Reject</a></td>
-			</tr>
-			{% endfor %}
-			</tbody>
-		</table>
-		<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+        <div class="notification-search">
+            <i class="fas fa-search"></i>
+            <input
+                type="search"
+                id="doctorSearch"
+                placeholder="Search doctor requests..."
+                aria-label="Search doctor requests">
+        </div>
+    </div>
+
+    <div class="notification-card">
+
+        <div class="notification-card-header">
+            <h5>
+                <i class="fas fa-clipboard-check text-primary"></i>
+                Pending Doctor Requests
+            </h5>
+            <small class="text-muted">Review each registration before approval</small>
+        </div>
+
+        <div class="table-responsive">
+            <table class="notification-table" id="notificationTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Doctor Name</th>
+                        <th>Contact</th>
+                        <th>Specialization</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for i in pat %}
+                    <tr class="doctor-row">
+                        <td>
+                            <span class="doctor-id">{{ i.id }}</span>
+                        </td>
+
+                        <td>
+                            <div class="doctor-profile">
+                                {% if i.image %}
+                                    <img src="{{ i.image.url }}" alt="Doctor profile">
+                                {% else %}
+                                    <div class="doctor-placeholder">
+                                        <i class="fas fa-user-md"></i>
+                                    </div>
+                                {% endif %}
+
+                                <span class="doctor-name">{{ i.name }}</span>
+                            </div>
+                        </td>
+
+                        <td>{{ i.mobile }}</td>
+
+                        <td>
+                            <span class="specialization-badge">
+                                {{ i.deparment.Department }}
+                            </span>
+                        </td>
+
+                        <td>{{ i.username }}</td>
+
+                        <td>{{ i.email }}</td>
+
+                        <td>
+                            <div class="action-buttons">
+                                <a
+                                    href="{% url 'approve' i.id %}"
+                                    class="approve-btn"
+                                    onclick="return confirm('Are you sure you want to approve this doctor?');">
+                                    <i class="fas fa-check-circle"></i>
+                                    Approve
+                                </a>
+
+                                <a
+                                    href="{% url 'delete_patient1' i.id %}"
+                                    class="reject-btn"
+                                    onclick="return confirm('Are you sure you want to reject this request?');">
+                                    <i class="fas fa-times-circle"></i>
+                                    Reject
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="empty-state">
+                            <i class="fas fa-check-circle"></i>
+                            <h5>No pending requests</h5>
+                            <p>There are currently no doctor registrations waiting for approval.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="no-results" id="noResults">
+            <i class="fas fa-search"></i>
+            No matching doctor requests found.
+        </div>
+
+        <div class="notification-footer">
+            <i class="fas fa-info-circle"></i>
+            Verify doctor details before approving a registration.
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('doctorSearch');
+        const rows = document.querySelectorAll('.doctor-row');
+        const noResults = document.getElementById('noResults');
+
+        searchInput.addEventListener('input', function () {
+            const query = this.value.toLowerCase().trim();
+            let visibleCount = 0;
+
+            rows.forEach(function (row) {
+                const matches = row.textContent.toLowerCase().includes(query);
+                row.style.display = matches ? '' : 'none';
+
+                if (matches) {
+                    visibleCount++;
+                }
+            });
+
+            noResults.style.display =
+                rows.length > 0 && visibleCount === 0 ? 'block' : 'none';
+        });
+    });
+</script>
+
 {% endblock content %}

@@ -1,30 +1,242 @@
+
 {% extends 'admin_nav.html' %}
 {% load static %}
+
 {% block content %}
 
 <style>
-	body{
-		background-color: rgb(55, 52, 52);
-	}
+  .department-page {
+    max-width: 760px;
+    margin: 15px auto;
+  }
+
+  .department-heading {
+    margin-bottom: 25px;
+  }
+
+  .department-heading h2 {
+    color: #172033;
+    font-size: 30px;
+    font-weight: 750;
+    margin-bottom: 8px;
+  }
+
+  .department-heading p {
+    color: #64748b;
+    margin-bottom: 0;
+    font-size: 15px;
+  }
+
+  .department-card {
+    background: #ffffff;
+    border: 1px solid #e5eaf2;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 10px 35px rgba(15, 23, 42, 0.07);
+  }
+
+  .department-card-header {
+    padding: 24px 28px;
+    background: linear-gradient(135deg, #2563eb, #4f46e5);
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .department-header-icon {
+    width: 54px;
+    height: 54px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.18);
+    border-radius: 14px;
+    font-size: 24px;
+  }
+
+  .department-card-header h4 {
+    font-size: 19px;
+    font-weight: 700;
+    margin: 0 0 5px;
+  }
+
+  .department-card-header p {
+    font-size: 13px;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .department-card-body {
+    padding: 30px;
+  }
+
+  .department-card-body label {
+    display: block;
+    color: #334155;
+    font-size: 14px;
+    font-weight: 650;
+    margin-bottom: 10px;
+  }
+
+  .department-card-body .form-control {
+    height: 50px;
+    border: 1px solid #dbe2ea;
+    border-radius: 10px;
+    padding: 12px 15px;
+    font-size: 15px;
+    box-shadow: none;
+    transition: border-color .2s, box-shadow .2s;
+  }
+
+  .department-card-body .form-control:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, .12);
+  }
+
+  .department-help {
+    color: #64748b;
+    font-size: 12px;
+    margin-top: 9px;
+  }
+
+  .department-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 28px;
+    padding-top: 22px;
+    border-top: 1px solid #edf0f5;
+  }
+
+  .department-btn {
+    border: 0;
+    border-radius: 9px;
+    padding: 12px 21px;
+    font-weight: 650;
+    font-size: 14px;
+    transition: transform .2s, background .2s;
+  }
+
+  .department-btn:hover {
+    transform: translateY(-2px);
+  }
+
+  .department-btn-primary {
+    color: #fff;
+    background: #2563eb;
+  }
+
+  .department-btn-primary:hover {
+    background: #1d4ed8;
+  }
+
+  .department-btn-secondary {
+    background: #f1f5f9;
+    color: #475569;
+  }
+
+  .department-btn-secondary:hover {
+    background: #e2e8f0;
+  }
+
+  @media (max-width: 576px) {
+    .department-page {
+      margin: 5px auto;
+    }
+
+    .department-heading h2 {
+      font-size: 25px;
+    }
+
+    .department-card-header {
+      padding: 20px;
+    }
+
+    .department-card-body {
+      padding: 22px 18px;
+    }
+
+    .department-actions {
+      flex-direction: column-reverse;
+    }
+
+    .department-btn {
+      width: 100%;
+    }
+  }
 </style>
-<body>
 
-<br><br><br><br><br><br>
-			<h1  style="color: #ffffff; text-align: center;">Add  Department</h1>
-             <br>
-				<form action="{% url 'add_depatment' %}" method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-					<div class="form-row">
-						<div class="col-12">
-							<div class="form-group">
-								<label style="color: #ffffff;">Department Name</label>
-								<input type="text" name="name" class="form-control" placeholder="Enter Department Name" required >
-							</div>
-						</div>
-                      </div>
+<div class="department-page">
 
-					<hr>
-					<input type="submit" value="Submit" class="btn btn-primary">
-				</form>
-	<br><br><br><br><br><br><br><br><br><br><br><br>
-{% endblock  %}
+  <div class="department-heading">
+    <h2>Add Department</h2>
+    <p>Create a new department for your hospital.</p>
+  </div>
+
+  <div class="department-card">
+
+    <div class="department-card-header">
+      <div class="department-header-icon">
+        <i class="fas fa-hospital-alt"></i>
+      </div>
+
+      <div>
+        <h4>Department Information</h4>
+        <p>Enter the department details below.</p>
+      </div>
+    </div>
+
+    <div class="department-card-body">
+
+      <form action="{% url 'add_depatment' %}"
+            method="post"
+            autocomplete="off">
+
+        {% csrf_token %}
+
+        <div class="form-group">
+          <label for="departmentName">
+            Department Name <span class="text-danger">*</span>
+          </label>
+
+          <input
+            type="text"
+            id="departmentName"
+            name="name"
+            class="form-control"
+            placeholder="e.g. Cardiology"
+            maxlength="100"
+            required
+          >
+
+          <div class="department-help">
+            <i class="fas fa-info-circle mr-1"></i>
+            Enter the official name of the hospital department.
+          </div>
+        </div>
+
+        <div class="department-actions">
+          <button
+            type="reset"
+            class="department-btn department-btn-secondary">
+            <i class="fas fa-redo-alt mr-2"></i>Clear
+          </button>
+
+          <button
+            type="submit"
+            class="department-btn department-btn-primary">
+            <i class="fas fa-plus mr-2"></i>Add Department
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}

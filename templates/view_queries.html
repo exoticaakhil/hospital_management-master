@@ -1,53 +1,220 @@
+
 {% extends 'admin_nav.html' %}
 {% load static %}
 {% block content %}
 
-
 <style>
-	body{
-		background-color: bisque;
-	}
+    body {
+        background: #f1f5f9;
+    }
+
+    .enquiry-wrapper {
+        padding: 40px 15px;
+    }
+
+    .enquiry-card {
+        border: none;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 8px 30px rgba(15, 23, 42, 0.08);
+    }
+
+    .enquiry-header {
+        background: linear-gradient(135deg, #087f8c, #075985);
+        color: white;
+        padding: 25px 30px;
+    }
+
+    .enquiry-header h4 {
+        margin: 0;
+        font-weight: 700;
+    }
+
+    .enquiry-header p {
+        margin: 7px 0 0;
+        color: #e0f2fe;
+    }
+
+    .enquiry-body {
+        padding: 30px;
+    }
+
+    .detail-label {
+        color: #64748b;
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        margin-bottom: 8px;
+    }
+
+    .detail-value {
+        color: #1e293b;
+        font-size: 16px;
+        font-weight: 500;
+        overflow-wrap: anywhere;
+    }
+
+    .detail-box {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 18px;
+        height: 100%;
+        transition: 0.2s ease;
+    }
+
+    .detail-box:hover {
+        border-color: #0891b2;
+    }
+
+    .message-box {
+        background: #f0fdfa;
+        border-left: 4px solid #0891b2;
+        border-radius: 8px;
+        padding: 22px;
+        color: #334155;
+        line-height: 1.8;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+    }
+
+    .section-title {
+        font-size: 17px;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 18px;
+    }
+
+    .btn-back {
+        background: #087f8c;
+        color: white;
+        border: none;
+        padding: 10px 22px;
+        border-radius: 8px;
+        font-weight: 600;
+    }
+
+    .btn-back:hover {
+        background: #075985;
+        color: white;
+    }
+
+    @media (max-width: 576px) {
+        .enquiry-body {
+            padding: 20px;
+        }
+
+        .enquiry-header {
+            padding: 22px;
+        }
+    }
 </style>
-<br><br><br><br>
-<div class="container card shadow m-5">
-    <div class="card-body">
-        <h5 class="p-2" style="border-bottom: 2px solid orange">View Enquiry Queries</h5>
-        <div class="container mt-5">
-		<h1 class="text-success text-center"></h1>
-           <table class="table table-bordered" style="font-size: x-large;">
-                                <tr align="center">
-                                    <td colspan="4" style="font-size : 20px; color : red"> View Queries Details</td>
-                                </tr>
 
-                                <tr>
-                                    <th>Name</th>
-                                    <td>{{contact.name}}</td>
+<div class="container enquiry-wrapper">
 
-                                    <th>Contact No.</th>
-                                    <td>{{contact.contact}}</td>
-                                </tr>
+    <div class="card enquiry-card">
 
-                                <tr>
-                                    <th>Email ID</th>
-                                    <td>{{contact.email}}</td>
+        <!-- Header -->
+        <div class="enquiry-header">
+            <h4>
+                <i class="fas fa-envelope-open-text mr-2"></i>
+                Enquiry Details
+            </h4>
+            <p>MAK HOSPITAL | Patient Enquiry Information</p>
+        </div>
 
-                                    <th>Subject</th>
-                                    <td>{{contact.subject}}</td>
-                                </tr>
+        <div class="enquiry-body">
 
-                                <tr>
-                                    <th>Enquiry Message</th>
-                                    <td colspan="3">{{contact.message}}</td>
-                                </tr>
+            <!-- Contact Details -->
+            <h5 class="section-title">
+                <i class="fas fa-user-circle text-info mr-2"></i>
+                Contact Information
+            </h5>
 
-                                <tr>
-                                    <th>Enquiry Date</th>
-                                    <td colspan="3">{{contact.msgdate}}</td>
-                                </tr>
+            <div class="row">
 
-                            </table>
+                <div class="col-md-6 mb-3">
+                    <div class="detail-box">
+                        <div class="detail-label">Full Name</div>
+                        <div class="detail-value">
+                            {{ contact.name|default:"Not provided" }}
                         </div>
                     </div>
                 </div>
-                <br><br><br><br><br>
+
+                <div class="col-md-6 mb-3">
+                    <div class="detail-box">
+                        <div class="detail-label">Contact Number</div>
+                        <div class="detail-value">
+                            <i class="fas fa-phone text-success mr-2"></i>
+                            {{ contact.contact|default:"Not provided" }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="detail-box">
+                        <div class="detail-label">Email Address</div>
+                        <div class="detail-value">
+                            <i class="fas fa-envelope text-info mr-2"></i>
+                            {{ contact.email|default:"Not provided" }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="detail-box">
+                        <div class="detail-label">Subject</div>
+                        <div class="detail-value">
+                            {{ contact.subject|default:"Not provided" }}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Message -->
+            <h5 class="section-title mt-4">
+                <i class="fas fa-comment-dots text-info mr-2"></i>
+                Enquiry Message
+            </h5>
+
+            <div class="message-box">
+                {{ contact.message|default:"No message provided" }}
+            </div>
+
+            <!-- Date -->
+            <div class="row mt-4">
+                <div class="col-md-6 mb-3">
+                    <div class="detail-box">
+                        <div class="detail-label">Enquiry Date</div>
+                        <div class="detail-value">
+                            <i class="far fa-calendar-alt text-warning mr-2"></i>
+                            {{ contact.msgdate|date:"d M Y"|default:"Not available" }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="mt-4 d-flex justify-content-between flex-wrap">
+                <a href="javascript:history.back()" class="btn btn-back mb-2">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Back to Enquiries
+                </a>
+
+                <button type="button"
+                        onclick="window.print()"
+                        class="btn btn-outline-secondary mb-2">
+                    <i class="fas fa-print mr-2"></i>
+                    Print Details
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
 {% endblock content %}

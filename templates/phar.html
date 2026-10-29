@@ -1,109 +1,323 @@
 {% extends 'nav3.html' %}
 {% load static %}
-{% block content %}
-<style>
 
-    /*assign full width inputs*/
-     
-    input[type=text],
-    input[type=password] {
-        width: 100%;
-        padding: 12px 20px;
-        margin: 8px 0;
-        display: inline-block;
-        border: 1px solid #ccc;
-        box-sizing: border-box;
+{% block content %}
+
+<style>
+  .pharmacy-signup-page {
+    min-height: calc(100vh - 70px);
+    padding: 35px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #edf4ff 0%, #f5f8fc 55%, #e5f7f3 100%);
+  }
+
+  .pharmacy-signup-page * {
+    box-sizing: border-box;
+  }
+
+  .signup-card {
+    width: 100%;
+    max-width: 480px;
+    overflow: hidden;
+    border: 1px solid #e3eaf3;
+    border-radius: 22px;
+    background: #fff;
+    box-shadow: 0 18px 50px rgba(15, 23, 42, 0.12);
+  }
+
+  .signup-header {
+    padding: 32px 28px 26px;
+    text-align: center;
+    color: #fff;
+    background: linear-gradient(135deg, #123047, #0f766e);
+  }
+
+  .signup-icon {
+    width: 68px;
+    height: 68px;
+    margin: 0 auto 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 21px;
+    background: rgba(255, 255, 255, 0.15);
+    font-size: 29px;
+  }
+
+  .signup-header h2 {
+    margin: 0 0 8px;
+    font-size: 26px;
+    font-weight: 800;
+  }
+
+  .signup-header p {
+    margin: 0;
+    color: #d5f5ef;
+    font-size: 13px;
+  }
+
+  .signup-body {
+    padding: 30px;
+  }
+
+  .signup-intro {
+    margin: 0 0 25px;
+    color: #64748b;
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .signup-field {
+    margin-bottom: 21px;
+  }
+
+  .signup-field label {
+    display: block;
+    margin-bottom: 8px;
+    color: #334155;
+    font-size: 13px;
+    font-weight: 750;
+  }
+
+  .signup-input-wrap {
+    position: relative;
+  }
+
+  .signup-input-wrap input {
+    display: block;
+    width: 100%;
+    height: 48px;
+    padding: 0 14px;
+    border: 1px solid #dbe3ee;
+    border-radius: 11px;
+    outline: none;
+    background: #f8fafc;
+    color: #1e293b;
+    font-size: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .signup-input-wrap input:focus {
+    border-color: #0f766e;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
+  }
+
+  .signup-input-wrap.password-wrap input {
+    padding-right: 48px;
+  }
+
+  .show-password {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 46px;
+    height: 48px;
+    border: none;
+    border-radius: 0 11px 11px 0;
+    background: transparent;
+    color: #64748b;
+    cursor: pointer;
+  }
+
+  .show-password:focus {
+    outline: 2px solid #99f6e4;
+  }
+
+  .remember-row {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin: 3px 0 22px;
+    color: #475569;
+    font-size: 13px;
+  }
+
+  .remember-row input {
+    width: 16px;
+    height: 16px;
+    accent-color: #0f766e;
+    cursor: pointer;
+  }
+
+  .signup-submit {
+    width: 100%;
+    min-height: 49px;
+    border: none;
+    border-radius: 11px;
+    color: #fff;
+    background: linear-gradient(135deg, #0f766e, #115e59);
+    font-size: 14px;
+    font-weight: 750;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .signup-submit:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(15, 118, 110, 0.22);
+  }
+
+  .signup-footer {
+    margin-top: 18px;
+    color: #94a3b8;
+    text-align: center;
+    font-size: 11px;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 480px) {
+    .pharmacy-signup-page {
+      padding: 22px 12px;
     }
-    /*set a style for the buttons*/
-     
-    button {
-        background-color: #060606;
-        color: white;
-        padding: 14px 20px;
-        margin: 8px 0;
-        border: none;
-        cursor: pointer;
-        width: 100%;
+
+    .signup-header {
+      padding: 27px 20px 23px;
     }
-    /* set a hover effect for the button*/
-     
-    button:hover {
-        opacity: 0.8;
+
+    .signup-body {
+      padding: 24px 20px;
     }
-    /*set extra style for the cancel button*/
-     
-    .cancelbtn {
-        width: auto;
-        padding: 10px 18px;
-        background-color: #f44336;
+
+    .signup-header h2 {
+      font-size: 23px;
     }
-    /*centre the display image inside the container*/
-     
-    .imgcontainer {
-        text-align: center;
-        margin: 24px 0 12px 0;
-    }
-    /*set image properties*/
-     
-    img.avatar {
-      
-        width: 40%;
-        border-radius: 50%;
-    }
-    /*set padding to the container*/
-     
-    .container {
-        padding: 16px;
-    }
-    /*set the forgot password text*/
-     
-    span.psw {
-        float: right;
-        padding-top: 16px;
-    }
-    /*set styles for span and cancel button on small screens*/
-     
-    @media screen and (max-width: 300px) {
-        span.psw {
-            display: block;
-            float: none;
-        }
-        .cancelbtn {
-            width: 100%;
-        }
-    }
-    body{
-  
-  background: -webkit-linear-gradient(to right, #383737, #373737);  
-  background: linear-gradient(to bottom, #383737, #373737); 
   }
 </style>
-<br><br><br><br>
-<h3 style="text-align: center; color: #ffffff;">Pharmacy Signup</h3>
-<form action="{% url 'pharsignup' %}" method="post" enctype="multipart/form-data">
-  {% csrf_token %}
 
-  
- 
-        <div class="container ">
-			<label style="color: #ffffff;"><b>Name of Pharmasist</b></label>
-            <input type="text" placeholder="Enter Name" name="name1" required>
-            <label style="color: #ffffff;"><b>Username</b></label>
-            <input type="text" placeholder="Enter Username" name="User" required>
- 
-            <label style="color: #ffffff;"><b>Password</b></label>
-            <input type="password" placeholder="Enter Password" name="pass" required>
- 
-            <button type="submit">signup</button>
-           <h6 style="color: #ffffff;"> <input type="checkbox" checked="checked"> Remember me</h6>
+<div class="pharmacy-signup-page">
+  <div class="signup-card">
+
+    <div class="signup-header">
+      <div class="signup-icon">
+        <i class="fas fa-prescription-bottle-alt"></i>
+      </div>
+      <h2>Pharmacy Signup</h2>
+      <p>Create an account for pharmacy staff.</p>
+    </div>
+
+    <div class="signup-body">
+      <p class="signup-intro">
+        Enter the pharmacist's details below to create a pharmacy account.
+      </p>
+
+      <form
+        action="{% url 'pharsignup' %}"
+        method="post"
+        id="pharmacySignupForm"
+      >
+        {% csrf_token %}
+
+        <div class="signup-field">
+          <label for="pharmacist_name">
+            <i class="fas fa-user mr-1"></i> Name of Pharmacist
+          </label>
+          <div class="signup-input-wrap">
+            <input
+              type="text"
+              id="pharmacist_name"
+              name="name1"
+              placeholder="Enter pharmacist name"
+              autocomplete="name"
+              maxlength="150"
+              required
+            >
+          </div>
         </div>
- 
-        <div class="container" >
-            <button type="button" class="cancelbtn">Cancel</button>
-         
+
+        <div class="signup-field">
+          <label for="pharmacy_username">
+            <i class="fas fa-user-circle mr-1"></i> Username
+          </label>
+          <div class="signup-input-wrap">
+            <input
+              type="text"
+              id="pharmacy_username"
+              name="User"
+              placeholder="Choose a username"
+              autocomplete="username"
+              maxlength="150"
+              required
+            >
+          </div>
         </div>
-</form>
+
+        <div class="signup-field">
+          <label for="pharmacy_password">
+            <i class="fas fa-lock mr-1"></i> Password
+          </label>
+          <div class="signup-input-wrap password-wrap">
+            <input
+              type="password"
+              id="pharmacy_password"
+              name="pass"
+              placeholder="Create a password"
+              autocomplete="new-password"
+              minlength="8"
+              required
+            >
+            <button
+              type="button"
+              class="show-password"
+              id="togglePassword"
+              aria-label="Show password"
+            >
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+          <small style="display:block; margin-top:7px; color:#64748b;">
+            Use at least 8 characters for a stronger password.
+          </small>
+        </div>
+
+        <label class="remember-row">
+          <input type="checkbox" name="remember_me" id="rememberMe">
+          <span>Remember me on this device</span>
+        </label>
+
+        <button type="submit" class="signup-submit">
+          <i class="fas fa-user-plus mr-2"></i> Create Pharmacy Account
+        </button>
+
+        <p class="signup-footer">
+          <i class="fas fa-shield-alt mr-1"></i>
+          Keep your login details private and secure.
+        </p>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const passwordInput = document.getElementById("pharmacy_password");
+    const toggleButton = document.getElementById("togglePassword");
+    const form = document.getElementById("pharmacySignupForm");
+
+    toggleButton.addEventListener("click", function () {
+      const show = passwordInput.type === "password";
+      passwordInput.type = show ? "text" : "password";
+
+      const icon = toggleButton.querySelector("i");
+      icon.classList.toggle("fa-eye", !show);
+      icon.classList.toggle("fa-eye-slash", show);
+
+      toggleButton.setAttribute(
+        "aria-label",
+        show ? "Hide password" : "Show password"
+      );
+    });
+
+    form.addEventListener("submit", function (event) {
+      if (!form.checkValidity()) {
+        event.preventDefault();
+        form.reportValidity();
+      }
+    });
+  });
+</script>
 
 {% endblock %}
-
-

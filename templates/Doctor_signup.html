@@ -1,0 +1,360 @@
+
+{% extends 'nav3.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+  :root {
+    --medical-blue: #1769aa;
+    --medical-dark: #123653;
+    --medical-green: #20a486;
+    --medical-bg: #f1f6fb;
+  }
+
+  body {
+    background: var(--medical-bg);
+    font-family: "Segoe UI", Arial, sans-serif;
+  }
+
+  .signup-page {
+    padding: 40px 15px;
+    min-height: 80vh;
+  }
+
+  .signup-card {
+    max-width: 760px;
+    margin: auto;
+    background: #fff;
+    border: 1px solid #e4ecf4;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 12px 40px rgba(18, 54, 83, .10);
+  }
+
+  .signup-header {
+    padding: 30px;
+    text-align: center;
+    color: #fff;
+    background: linear-gradient(135deg, #123653, #1769aa);
+  }
+
+  .signup-icon {
+    width: 68px;
+    height: 68px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 14px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, .15);
+    font-size: 2.2rem;
+  }
+
+  .signup-header h2 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+
+  .signup-header p {
+    margin: 0;
+    color: #dceaf5;
+  }
+
+  .signup-body {
+    padding: 30px;
+  }
+
+  .section-title {
+    font-size: 1.2rem;
+    color: var(--medical-dark);
+    font-weight: 750;
+    margin-bottom: 6px;
+  }
+
+  .section-description {
+    color: #7b8b9d;
+    font-size: .92rem;
+    margin-bottom: 25px;
+  }
+
+  .form-label {
+    color: #344b60;
+    font-weight: 650;
+    margin-bottom: 8px;
+  }
+
+  .form-control,
+  .form-select {
+    min-height: 47px;
+    border: 1px solid #dce5ee;
+    border-radius: 9px;
+    color: #344b60;
+    background-color: #fff;
+  }
+
+  .form-control:focus,
+  .form-select:focus {
+    border-color: var(--medical-blue);
+    box-shadow: 0 0 0 3px rgba(23, 105, 170, .10);
+  }
+
+  .form-control[type="file"] {
+    padding: 10px;
+  }
+
+  .form-help {
+    color: #8291a1;
+    font-size: .82rem;
+    margin-top: 6px;
+  }
+
+  .upload-box {
+    padding: 18px;
+    border: 1px dashed #b9cadb;
+    border-radius: 12px;
+    background: #f8fbfe;
+  }
+
+  .upload-box i {
+    color: var(--medical-blue);
+    font-size: 1.4rem;
+    margin-right: 8px;
+  }
+
+  .signup-button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    background: var(--medical-blue);
+    font-size: 1rem;
+    font-weight: 750;
+    transition: background .2s, transform .2s;
+  }
+
+  .signup-button:hover {
+    background: var(--medical-dark);
+    transform: translateY(-1px);
+  }
+
+  .signup-footer {
+    padding: 17px;
+    text-align: center;
+    color: #718397;
+    background: #f8fafc;
+    border-top: 1px solid #edf1f5;
+    font-size: .87rem;
+  }
+
+  .signup-footer i {
+    color: var(--medical-green);
+  }
+
+  @media (max-width: 576px) {
+    .signup-page {
+      padding: 22px 10px;
+    }
+
+    .signup-header {
+      padding: 25px 18px;
+    }
+
+    .signup-body {
+      padding: 22px 18px;
+    }
+  }
+</style>
+
+{% if error == "no" %}
+<script>
+  alert('Your registration has been submitted. Please wait for approval.');
+  window.location.href = "{% url 'login' %}";
+</script>
+{% endif %}
+
+{% if error == "yes" %}
+<script>
+  alert('Something went wrong. Please try again.');
+</script>
+{% endif %}
+
+<div class="signup-page">
+  <div class="signup-card">
+
+    <!-- Header -->
+    <div class="signup-header">
+      <div class="signup-icon">
+        <i class="bi bi-person-vcard"></i>
+      </div>
+      <h2>Doctor Registration</h2>
+      <p>MAK Hospital Management Portal</p>
+    </div>
+
+    <!-- Messages -->
+    <div class="px-4 pt-3">
+      {% for m in messages %}
+        <div class="alert alert-danger alert-dismissible fade show"
+             role="alert">
+          {{ m }}
+          <button type="button"
+                  class="btn-close"
+                  data-bs-dismiss="alert"
+                  aria-label="Close"
+                  style="width:auto; margin:0; padding:10px;">
+          </button>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Form -->
+    <div class="signup-body">
+      <h4 class="section-title">Professional Information</h4>
+      <p class="section-description">
+        Enter your details to request access to the doctor portal.
+      </p>
+
+      <form action="{% url 'patient_signup' %}"
+            method="post"
+            enctype="multipart/form-data">
+
+        {% csrf_token %}
+
+        <div class="row g-3">
+
+          <!-- Doctor Name -->
+          <div class="col-12 col-md-6">
+            <label for="doctorName" class="form-label">
+              Doctor Name
+            </label>
+            <input type="text"
+                   id="doctorName"
+                   name="name"
+                   class="form-control"
+                   placeholder="Enter full name"
+                   autocomplete="name"
+                   required>
+          </div>
+
+          <!-- Mobile -->
+          <div class="col-12 col-md-6">
+            <label for="mobile" class="form-label">
+              Contact Number
+            </label>
+            <input type="tel"
+                   id="mobile"
+                   name="mobile"
+                   class="form-control"
+                   placeholder="10-digit mobile number"
+                   pattern="[0-9]{10}"
+                   maxlength="10"
+                   minlength="10"
+                   inputmode="numeric"
+                   required>
+            <div class="form-help">
+              Enter a 10-digit mobile number.
+            </div>
+          </div>
+
+          <!-- Username -->
+          <div class="col-12 col-md-6">
+            <label for="username" class="form-label">
+              Username
+            </label>
+            <input type="text"
+                   id="username"
+                   name="User"
+                   class="form-control"
+                   placeholder="Choose a username"
+                   autocomplete="username"
+                   required>
+          </div>
+
+          <!-- Email -->
+          <div class="col-12 col-md-6">
+            <label for="email" class="form-label">
+              Email Address
+            </label>
+            <input type="email"
+                   id="email"
+                   name="mail"
+                   class="form-control"
+                   placeholder="doctor@example.com"
+                   autocomplete="email"
+                   required>
+          </div>
+
+          <!-- Department -->
+          <div class="col-12">
+            <label for="department" class="form-label">
+              Medical Department
+            </label>
+            <select id="department"
+                    name="department"
+                    class="form-select"
+                    required>
+              <option value="" selected disabled>
+                Select your department
+              </option>
+
+              {% for i in b %}
+                <option value="{{ i.id }}">
+                  {{ i.Department }}
+                </option>
+              {% empty %}
+                <option value="" disabled>
+                  No departments available
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <!-- Profile Image -->
+          <div class="col-12">
+            <label for="doctorImage" class="form-label">
+              Profile Image
+            </label>
+
+            <div class="upload-box">
+              <div class="mb-2">
+                <i class="bi bi-cloud-arrow-up"></i>
+                <strong>Upload your profile photo</strong>
+              </div>
+
+              <input type="file"
+                     id="doctorImage"
+                     name="image"
+                     class="form-control"
+                     accept="image/*"
+                     required>
+
+              <div class="form-help">
+                Select an image file for your doctor profile.
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit -->
+          <div class="col-12 mt-4">
+            <button type="submit" class="signup-button">
+              <i class="bi bi-person-check me-2"></i>
+              Submit Registration
+            </button>
+          </div>
+
+        </div>
+      </form>
+    </div>
+
+    <!-- Footer -->
+    <div class="signup-footer">
+      <i class="bi bi-shield-check me-1"></i>
+      Your registration is subject to hospital approval.
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

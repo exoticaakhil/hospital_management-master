@@ -1,46 +1,383 @@
+
 {% extends 'admin_nav.html' %}
 {% load static %}
 {% block content %}
 
+<style>
+    .queries-page {
+        min-height: 100vh;
+        padding: 30px 24px;
+        background: linear-gradient(135deg, #f1f5f9, #e8eef8);
+        font-family: 'Segoe UI', sans-serif;
+    }
 
-  <style>
+    .queries-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 18px;
+        margin-bottom: 25px;
+    }
 
-body{
-  
-  background: -webkit-linear-gradient(to right, #383737, #373737);  
-  background: linear-gradient(to bottom, #383737, #373737); 
-  }
+    .queries-heading h2 {
+        color: #172554;
+        font-size: 28px;
+        font-weight: 750;
+        margin-bottom: 7px;
+    }
 
+    .queries-heading p {
+        color: #64748b;
+        font-size: 14px;
+        margin: 0;
+    }
+
+    .unread-count {
+        display: inline-block;
+        margin-top: 12px;
+        padding: 7px 13px;
+        border-radius: 20px;
+        background: #dbeafe;
+        color: #1d4ed8;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .queries-search {
+        position: relative;
+        min-width: 260px;
+    }
+
+    .queries-search i {
+        position: absolute;
+        left: 14px;
+        top: 15px;
+        color: #94a3b8;
+    }
+
+    .queries-search input {
+        width: 100%;
+        padding: 12px 14px 12px 40px;
+        border: 1px solid #dbe3ef;
+        border-radius: 12px;
+        outline: none;
+        background: #fff;
+    }
+
+    .queries-search input:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, .12);
+    }
+
+    .queries-card {
+        background: #fff;
+        border: 1px solid #e8edf5;
+        border-radius: 18px;
+        box-shadow: 0 8px 30px rgba(15, 23, 42, .07);
+        overflow: hidden;
+    }
+
+    .queries-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 20px 22px;
+        border-bottom: 1px solid #edf1f7;
+    }
+
+    .queries-card-header h5 {
+        margin: 0;
+        color: #1e293b;
+        font-size: 17px;
+        font-weight: 700;
+    }
+
+    .queries-table {
+        width: 100%;
+        min-width: 750px;
+        margin: 0;
+        border-collapse: collapse;
+    }
+
+    .queries-table thead th {
+        padding: 16px 18px;
+        background: #f8fafc;
+        color: #64748b;
+        font-size: 11px;
+        font-weight: 750;
+        letter-spacing: .5px;
+        text-transform: uppercase;
+        border: none;
+        white-space: nowrap;
+    }
+
+    .queries-table tbody td {
+        padding: 17px 18px;
+        border-top: 1px solid #edf1f7;
+        color: #475569;
+        font-size: 13px;
+        vertical-align: middle;
+    }
+
+    .queries-table tbody tr {
+        transition: background .2s ease;
+    }
+
+    .queries-table tbody tr:hover {
+        background: #f8fbff;
+    }
+
+    .serial-number {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 9px;
+        background: #e0e7ff;
+        color: #4338ca;
+        font-weight: 750;
+    }
+
+    .query-name {
+        color: #1e293b;
+        font-weight: 700;
+    }
+
+    .query-email {
+        color: #2563eb;
+        overflow-wrap: anywhere;
+    }
+
+    .query-contact {
+        white-space: nowrap;
+    }
+
+    .unread-badge {
+        display: inline-block;
+        padding: 5px 9px;
+        background: #fef3c7;
+        color: #92400e;
+        border-radius: 7px;
+        font-size: 11px;
+        font-weight: 750;
+    }
+
+    .view-query-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 9px 12px;
+        border-radius: 9px;
+        background: #dbeafe;
+        color: #1d4ed8;
+        border: 1px solid #bfdbfe;
+        font-size: 12px;
+        font-weight: 700;
+        text-decoration: none;
+        white-space: nowrap;
+        transition: .2s ease;
+    }
+
+    .view-query-btn:hover {
+        background: #1d4ed8;
+        color: #fff;
+        text-decoration: none;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 55px 20px !important;
+    }
+
+    .empty-state i {
+        display: block;
+        font-size: 44px;
+        color: #cbd5e1;
+        margin-bottom: 15px;
+    }
+
+    .empty-state h5 {
+        color: #334155;
+        font-weight: 750;
+    }
+
+    .empty-state p {
+        color: #94a3b8;
+        margin: 0;
+    }
+
+    .no-results {
+        display: none;
+        padding: 25px;
+        text-align: center;
+        color: #64748b;
+    }
+
+    .queries-footer {
+        padding: 15px 22px;
+        color: #94a3b8;
+        font-size: 12px;
+        border-top: 1px solid #edf1f7;
+    }
+
+    @media (max-width: 768px) {
+        .queries-page {
+            padding: 20px 12px;
+        }
+
+        .queries-heading h2 {
+            font-size: 23px;
+        }
+
+        .queries-search {
+            min-width: 0;
+            width: 100%;
+        }
+
+        .queries-card-header {
+            padding: 16px;
+        }
+    }
 </style>
 
-<br><br><br><br><br><br>
+<div class="queries-page">
 
-        <h3 style="text-align: center; color:white;">unread queries </h3>
-		<div class="table-responsive">
-		<table class="table table-primary">
-			<thead class="thead-dark">
-                                    <tr>
-                                        <th class="text-center">S.No</th>
-                                        <th class="d-none d-table-cell">Name</th>
-                                        <th class="d-none d-table-cell">Email ID</th>
-                                        <th class="d-none d-table-cell">Contact Number</th>
-                                        <th class="d-none d-table-cell">Action</th>
-                                    </tr>
-                                </thead>
-                                {% for i in contact %}
-                                <tbody>
-                                    <tr>
-                                        <td class="text-center">{{forloop.counter}}</td>
-                                        <td class="font-w600">{{i.name}}</td>
-                                        <td class="font-w600">{{i.email}}</td>
-                                        <td class="font-w600">{{i.contact}}</td>
-                                        <td class="font-w600"><a href="{% url 'view_queries' i.id %}" class="text-primary">View Details</a></td>
-                                    </tr>
-                                        {% endfor %}
-                                </tbody>
-            </table>
- 
+    <div class="queries-header">
+        <div class="queries-heading">
+            <h2>
+                <i class="fas fa-envelope-open-text"></i>
+                Unread Queries
+            </h2>
+
+            <p>Review messages and questions submitted through your website.</p>
+
+            <span class="unread-count">
+                <i class="fas fa-inbox"></i>
+                {{ contact|length }} Unread Quer{{ contact|length|pluralize:"y,ies" }}
+            </span>
+        </div>
+
+        <div class="queries-search">
+            <i class="fas fa-search"></i>
+            <input
+                type="search"
+                id="querySearch"
+                placeholder="Search name, email or contact..."
+                aria-label="Search unread queries">
+        </div>
     </div>
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-{% endblock content %}
 
+    <div class="queries-card">
+
+        <div class="queries-card-header">
+            <h5>
+                <i class="fas fa-comments text-primary"></i>
+                Incoming Messages
+            </h5>
+
+            <small class="text-muted">Select a query to view its details</small>
+        </div>
+
+        <div class="table-responsive">
+            <table class="queries-table" id="queriesTable">
+                <thead>
+                    <tr>
+                        <th class="text-center">S.No</th>
+                        <th>Name</th>
+                        <th>Email Address</th>
+                        <th>Contact Number</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for i in contact %}
+                    <tr class="query-row">
+                        <td class="text-center">
+                            <span class="serial-number">{{ forloop.counter }}</span>
+                        </td>
+
+                        <td>
+                            <span class="query-name">{{ i.name }}</span>
+                        </td>
+
+                        <td>
+                            <span class="query-email">{{ i.email }}</span>
+                        </td>
+
+                        <td>
+                            <span class="query-contact">{{ i.contact }}</span>
+                        </td>
+
+                        <td>
+                            <span class="unread-badge">
+                                <i class="fas fa-circle"></i> Unread
+                            </span>
+                        </td>
+
+                        <td>
+                            <a href="{% url 'view_queries' i.id %}"
+                               class="view-query-btn">
+                                <i class="fas fa-eye"></i>
+                                View Details
+                            </a>
+                        </td>
+                    </tr>
+
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="empty-state">
+                            <i class="fas fa-check-circle"></i>
+                            <h5>No unread queries</h5>
+                            <p>You're all caught up. New messages will appear here.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="no-results" id="noResults">
+            <i class="fas fa-search"></i>
+            No matching queries found.
+        </div>
+
+        <div class="queries-footer">
+            <i class="fas fa-info-circle"></i>
+            Only queries supplied by the view in the <code>contact</code> variable are displayed.
+        </div>
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('querySearch');
+        const rows = document.querySelectorAll('.query-row');
+        const noResults = document.getElementById('noResults');
+
+        searchInput.addEventListener('input', function () {
+            const query = this.value.toLowerCase().trim();
+            let visibleCount = 0;
+
+            rows.forEach(function (row) {
+                const matches = row.textContent.toLowerCase().includes(query);
+                row.style.display = matches ? '' : 'none';
+
+                if (matches) {
+                    visibleCount++;
+                }
+            });
+
+            noResults.style.display =
+                rows.length > 0 && visibleCount === 0 ? 'block' : 'none';
+        });
+    });
+</script>
+
+{% endblock content %}

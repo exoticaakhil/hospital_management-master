@@ -1,67 +1,430 @@
+
 {% extends 'admin_nav.html' %}
 {% load static %}
 {% block content %}
 
+<style>
+    .search-appointment-page {
+        min-height: 100vh;
+        padding: 30px 24px;
+        background: linear-gradient(135deg, #f1f5f9, #e8eef8);
+        font-family: 'Segoe UI', sans-serif;
+    }
 
-  <style>
-body{
-  
-  background: -webkit-linear-gradient(to right, #383737, #373737);  
-  background: linear-gradient(to bottom, #383737, #373737); 
-  }
+    .search-page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 18px;
+        margin-bottom: 25px;
+    }
+
+    .search-page-title h2 {
+        color: #172554;
+        font-size: 28px;
+        font-weight: 750;
+        margin-bottom: 7px;
+    }
+
+    .search-page-title p {
+        color: #64748b;
+        font-size: 14px;
+        margin-bottom: 0;
+    }
+
+    .search-count {
+        display: inline-block;
+        background: #dbeafe;
+        color: #1d4ed8;
+        padding: 7px 13px;
+        border-radius: 20px;
+        margin-top: 12px;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .search-toolbar {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .search-input-wrapper {
+        position: relative;
+        min-width: 260px;
+    }
+
+    .search-input-wrapper i {
+        position: absolute;
+        left: 14px;
+        top: 15px;
+        color: #94a3b8;
+    }
+
+    .search-input-wrapper input {
+        width: 100%;
+        padding: 12px 14px 12px 40px;
+        border: 1px solid #dbe3ef;
+        border-radius: 12px;
+        outline: none;
+        background: #fff;
+    }
+
+    .search-input-wrapper input:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, .12);
+    }
+
+    .search-submit {
+        background: #1d4ed8;
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 12px 17px;
+        font-size: 14px;
+        font-weight: 650;
+        cursor: pointer;
+        transition: .2s;
+    }
+
+    .search-submit:hover {
+        background: #1e40af;
+    }
+
+    .history-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #172554;
+        color: white;
+        padding: 12px 16px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 650;
+        transition: .2s;
+    }
+
+    .history-link:hover {
+        background: #334155;
+        color: white;
+        text-decoration: none;
+    }
+
+    .search-results-card {
+        background: white;
+        border: 1px solid #e8edf5;
+        border-radius: 18px;
+        box-shadow: 0 8px 30px rgba(15, 23, 42, .07);
+        overflow: hidden;
+    }
+
+    .results-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 20px 22px;
+        border-bottom: 1px solid #edf1f7;
+    }
+
+    .results-card-header h5 {
+        margin: 0;
+        color: #1e293b;
+        font-size: 17px;
+        font-weight: 700;
+    }
+
+    .results-card-header small {
+        color: #94a3b8;
+    }
+
+    .search-results-table {
+        width: 100%;
+        min-width: 1000px;
+        border-collapse: collapse;
+        margin: 0;
+    }
+
+    .search-results-table thead th {
+        padding: 16px 14px;
+        background: #f8fafc;
+        color: #64748b;
+        font-size: 11px;
+        font-weight: 750;
+        letter-spacing: .5px;
+        text-transform: uppercase;
+        border: none;
+        white-space: nowrap;
+    }
+
+    .search-results-table tbody td {
+        padding: 17px 14px;
+        color: #475569;
+        font-size: 13px;
+        border-top: 1px solid #edf1f7;
+        vertical-align: middle;
+    }
+
+    .search-results-table tbody tr:hover {
+        background: #f8fbff;
+    }
+
+    .doctor-name,
+    .patient-name {
+        color: #1e293b;
+        font-weight: 700;
+    }
+
+    .department-label {
+        display: inline-block;
+        background: #ede9fe;
+        color: #6d28d9;
+        border-radius: 7px;
+        padding: 6px 10px;
+        font-size: 12px;
+        font-weight: 650;
+    }
+
+    .patient-id-label {
+        display: inline-block;
+        background: #e0f2fe;
+        color: #0369a1;
+        border-radius: 7px;
+        padding: 6px 10px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .token-label {
+        display: inline-block;
+        background: #dcfce7;
+        color: #15803d;
+        border-radius: 8px;
+        padding: 6px 10px;
+        font-weight: 750;
+    }
+
+    .symptom-value {
+        display: block;
+        max-width: 180px;
+        overflow-wrap: anywhere;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 55px 20px;
+    }
+
+    .empty-state i {
+        font-size: 45px;
+        color: #cbd5e1;
+        margin-bottom: 16px;
+    }
+
+    .empty-state h4 {
+        color: #334155;
+        font-size: 19px;
+        font-weight: 750;
+    }
+
+    .empty-state p {
+        color: #94a3b8;
+        font-size: 14px;
+    }
+
+    .empty-state a {
+        display: inline-block;
+        margin-top: 8px;
+        background: #1d4ed8;
+        color: white;
+        padding: 10px 16px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 650;
+    }
+
+    .empty-state a:hover {
+        background: #1e40af;
+    }
+
+    .results-footer {
+        padding: 15px 22px;
+        border-top: 1px solid #edf1f7;
+        color: #94a3b8;
+        font-size: 12px;
+    }
+
+    @media (max-width: 768px) {
+        .search-appointment-page {
+            padding: 20px 12px;
+        }
+
+        .search-page-title h2 {
+            font-size: 23px;
+        }
+
+        .search-toolbar {
+            width: 100%;
+        }
+
+        .search-input-wrapper {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .results-card-header {
+            padding: 16px;
+        }
+    }
 </style>
-<br><br><br><br>
-{%if products%}
-  <h3 style="text-align:center; color:#f6f9fd;">{{word}}</h3>
-  <br>
-  
-  <!-- products data start -->
 
+<div class="search-appointment-page">
 
-	<div class="table-responsive">
-		<table class="table table-primary">
-			<thead class="thead-dark">
-				  <tr>
-					<th scope="col">Doctor</th>
-					<th scope="col">Department</th>
-					<th scope="col">Patient </th>
-					<th scope="col">Patient id </th>
-                    <th scope="col">Date</th>
-					<th scope="col">Time</th>
-					<th scope="col">token</th>
-					<th scope="col">Symptoms</th>
+    <div class="search-page-header">
+        <div class="search-page-title">
+            <h2>
+                <i class="fas fa-calendar-check"></i>
+                Appointment History
+            </h2>
 
-				  </tr>
-				</thead>
-				<tbody>
+            <p>Search and review hospital appointment records.</p>
 
-			<tbody>
-            {% for p in products %}
-			<tr>
-				<td>{{p.doctor}}</td>
-				<td>{{p.deparment}}</td>
-				<td>{{p.patient1}}</td>
-				<td>{{p.patientno}}</td>
-				<td>{{p.date1}}</td>
-				<td>{{p.time1}}</td>
-				<td>{{p.token}}</td>
-				<td>{{p.Symptoms}}</td>
-		
-			</tr>
-			{% endfor %}
-			</tbody>
-		</table>
-	 </div>
+            {% if products %}
+                <span class="search-count">
+                    <i class="fas fa-clipboard-list"></i>
+                    {{ products|length }} Matching Appointment{{ products|length|pluralize }}
+                </span>
+            {% endif %}
+        </div>
 
+        <div class="search-toolbar">
+            <form action="{% url 'search_view' %}" method="get"
+                  class="search-toolbar">
+                <div class="search-input-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input
+                        type="search"
+                        name="query"
+                        value="{{ query|default:'' }}"
+                        placeholder="Search by patient ID..."
+                        aria-label="Search by patient ID">
+                </div>
 
+                <button type="submit" class="search-submit">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </form>
 
-{%else%}
+            <a href="{% url 'search_view' %}?query=" class="history-link">
+                <i class="fas fa-history"></i> All Appointments
+            </a>
+        </div>
+    </div>
 
-<h3 style="text-align:center; color:#fbfbfc;">No Search Found</h3>
-<br><br><br><br>
-{%endif%}
+    <div class="search-results-card">
 
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+        <div class="results-card-header">
+            <h5>
+                <i class="fas fa-list-alt text-primary"></i>
+                {{ word|default:"Appointment Records" }}
+            </h5>
+            <small>Patient ID search</small>
+        </div>
 
+        {% if products %}
+        <div class="table-responsive">
+            <table class="search-results-table">
+                <thead>
+                    <tr>
+                        <th>Doctor</th>
+                        <th>Department</th>
+                        <th>Patient</th>
+                        <th>Patient ID</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Token</th>
+                        <th>Symptoms</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for p in products %}
+                    <tr>
+                        <td>
+                            <span class="doctor-name">
+                                <i class="fas fa-user-md text-primary"></i>
+                                {{ p.doctor }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="department-label">
+                                {{ p.deparment }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="patient-name">{{ p.patient1 }}</span>
+                        </td>
+
+                        <td>
+                            <span class="patient-id-label">
+                                {{ p.patientno }}
+                            </span>
+                        </td>
+
+                        <td>{{ p.date1|date:"d M Y" }}</td>
+
+                        <td>{{ p.time1|time:"h:i A" }}</td>
+
+                        <td>
+                            <span class="token-label">#{{ p.token }}</span>
+                        </td>
+
+                        <td>
+                            <span class="symptom-value">
+                                {{ p.Symptoms|default:"—" }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="results-footer">
+            <i class="fas fa-info-circle"></i>
+            Showing appointment records from your database.
+        </div>
+
+        {% else %}
+        <div class="empty-state">
+            <i class="far fa-calendar-times"></i>
+
+            <h4>No appointments found</h4>
+
+            <p>
+                {% if query %}
+                    No appointments matched patient ID "{{ query }}".
+                    Check the ID and try again.
+                {% else %}
+                    There are no appointment records to display.
+                {% endif %}
+            </p>
+
+            {% if query %}
+                <a href="{% url 'search_view' %}?query=">
+                    <i class="fas fa-list"></i> View All Appointments
+                </a>
+            {% endif %}
+        </div>
+        {% endif %}
+
+    </div>
+</div>
 
 {% endblock content %}

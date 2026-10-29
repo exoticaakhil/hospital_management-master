@@ -1,95 +1,377 @@
+
 {% extends 'nav2.html' %}
 {% load static %}
+
 {% block content %}
 
-    <style media="screen">
-      a:link {
-        text-decoration: none;
-      }
-    </style>
-    <style>
- body{
- background: -webkit-linear-gradient(to right, #383737, #373737);  
-    background: linear-gradient(to bottom, #383737, #373737); 
+<style>
+    .reference-page {
+        padding: 24px;
+        color: #1e293b;
     }
-    </style>
 
-              <h3  style="color:white; text-align: center;">Diagnosis</h3>
-                  <form action="{% url 'refrence' v.id %}" method="post" enctype="multipart/form-data">
-                      {% csrf_token %} 
-                      <div class="form-row">
-  
-                          <div class="col-12">
-                              <div class="form-group">
-                                  <label style="color: #ffffff;">Patient Name</label>
-                                  <input  type="text" name="pname" class="form-control" value="{{v.patient1.name}}" disabled>
-                              </div>
-                          </div>
-                          <div class="col-12">
-                            <div class="form-group">
-                                <label style="color: #ffffff;">Patient Id</label>
-                                <input  type="text" name="pid" class="form-control" value="{{v.patientno}}" disabled>
-                            </div>
+    .reference-heading {
+        margin-bottom: 24px;
+    }
+
+    .reference-heading h3 {
+        color: #0f2747;
+        font-size: 26px;
+        font-weight: 700;
+        margin-bottom: 7px;
+    }
+
+    .reference-heading p {
+        color: #64748b;
+        font-size: 14px;
+        margin-bottom: 0;
+    }
+
+    .reference-card {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 8px 25px rgba(15, 39, 71, 0.07);
+    }
+
+    .reference-card-header {
+        background: linear-gradient(135deg, #0f2747, #155e75);
+        color: #fff;
+        padding: 22px 25px;
+    }
+
+    .reference-card-header h5 {
+        font-size: 18px;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .reference-card-header p {
+        color: #dbeafe;
+        font-size: 13px;
+        margin: 7px 0 0;
+    }
+
+    .reference-card-body {
+        padding: 26px;
+    }
+
+    .reference-section-title {
+        color: #0f2747;
+        font-size: 15px;
+        font-weight: 700;
+        padding-bottom: 12px;
+        margin: 0 0 20px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .reference-page .form-group {
+        margin-bottom: 20px;
+    }
+
+    .reference-page label {
+        color: #334155;
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .reference-page .form-control {
+        min-height: 44px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        background-color: #fff;
+        color: #334155;
+        font-size: 14px;
+    }
+
+    .reference-page .form-control:focus {
+        border-color: #0d9488;
+        box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.12);
+    }
+
+    .reference-page .form-control[readonly],
+    .reference-page .form-control:disabled {
+        background: #f1f5f9;
+        color: #64748b;
+        opacity: 1;
+    }
+
+    .reference-page textarea.form-control {
+        min-height: 130px;
+        padding: 12px;
+        resize: vertical;
+    }
+
+    .reference-info {
+        background: #f0fdfa;
+        border: 1px solid #ccfbf1;
+        border-radius: 10px;
+        padding: 14px 16px;
+        margin-bottom: 24px;
+        color: #115e59;
+        font-size: 13px;
+    }
+
+    .reference-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        flex-wrap: wrap;
+        border-top: 1px solid #e2e8f0;
+        margin-top: 10px;
+        padding-top: 22px;
+    }
+
+    .reference-actions .btn {
+        border-radius: 8px;
+        padding: 11px 22px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .btn-reference-submit {
+        background: #0d9488;
+        border: 1px solid #0d9488;
+        color: #fff;
+    }
+
+    .btn-reference-submit:hover {
+        background: #0f766e;
+        border-color: #0f766e;
+        color: #fff;
+    }
+
+    @media (max-width: 767px) {
+        .reference-page {
+            padding: 16px 10px;
+        }
+
+        .reference-heading h3 {
+            font-size: 23px;
+        }
+
+        .reference-card-body {
+            padding: 18px 15px;
+        }
+
+        .reference-card-header {
+            padding: 19px;
+        }
+
+        .reference-actions {
+            flex-direction: column;
+        }
+
+        .reference-actions .btn {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="reference-page">
+
+    <div class="reference-heading">
+        <h3>
+            <i class="fas fa-user-md mr-2"></i>
+            Refer Patient
+        </h3>
+        <p>Transfer the patient to another doctor and update the appointment details.</p>
+    </div>
+
+    <div class="reference-card">
+
+        <div class="reference-card-header">
+            <h5>
+                <i class="fas fa-file-medical-alt mr-2"></i>
+                Patient Referral Form
+            </h5>
+            <p>Review patient information and select the receiving doctor.</p>
+        </div>
+
+        <div class="reference-card-body">
+
+            <div class="reference-info">
+                <i class="fas fa-info-circle mr-2"></i>
+                Select the doctor who will receive the referral. The department will update automatically.
+            </div>
+
+            <form action="{% url 'refrence' v.id %}" method="post">
+                {% csrf_token %}
+
+                <h6 class="reference-section-title">
+                    <i class="fas fa-user-injured mr-2"></i>
+                    Patient Information
+                </h6>
+
+                <div class="form-row">
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="patientName">Patient Name</label>
+                            <input
+                                id="patientName"
+                                type="text"
+                                name="pname"
+                                class="form-control"
+                                value="{{ v.patient1.name }}"
+                                disabled>
                         </div>
-  
-                        <div class="col-12">
-                          <div class="form-group">
-                            <label style="color: #ffffff;">Doctor Name</label>
-                            <select  name="Doctor" class="form-control" id="doctorDropdown">
-                              {% for i in c %}
-                              <option value="{{i.id}}" data-department-id="{{ i.deparment.Department }}">{{i.name}}</option>
-                              {% endfor %}
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="patientId">Patient ID</label>
+                            <input
+                                id="patientId"
+                                type="text"
+                                name="pid"
+                                class="form-control"
+                                value="{{ v.patientno }}"
+                                disabled>
+                        </div>
+                    </div>
+
+                </div>
+
+                <h6 class="reference-section-title mt-3">
+                    <i class="fas fa-user-md mr-2"></i>
+                    Referral Details
+                </h6>
+
+                <div class="form-row">
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="doctorDropdown">Refer To Doctor</label>
+                            <select
+                                name="Doctor"
+                                class="form-control"
+                                id="doctorDropdown"
+                                required>
+
+                                <option value="" data-department="" selected disabled>
+                                    -- Select a doctor --
+                                </option>
+
+                                {% for i in c %}
+                                <option
+                                    value="{{ i.id }}"
+                                    data-department="{{ i.deparment.Department }}">
+                                    {{ i.name }}
+                                </option>
+                                {% endfor %}
+
                             </select>
-                            <br>
-                            
-                          </div> 
                         </div>
-                        <div class="col-12">
-                          <div class="form-group">
-                            <label style="color: #ffffff;" >Department</label>
-                            <input type="text"   id="departmentTextBox" name="department" readonly>
-            
-                            <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-                            <script>
-                              $(document).ready(function () {
-                                $('#doctorDropdown').change(function () {
-                                  var selectedDoctor = $('#doctorDropdown option:selected');
-                                  var departmentId = selectedDoctor.data('department-id');
-                                  $('#departmentTextBox').val(departmentId);
-                                });
-                              });
-                            </script>
-                          </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="departmentTextBox">Department</label>
+                            <input
+                                type="text"
+                                id="departmentTextBox"
+                                name="department"
+                                class="form-control"
+                                placeholder="Auto-filled from selected doctor"
+                                readonly
+                                required>
                         </div>
-            
-                          <div class="col-12">
-                              <div class="form-group">
-                                  <label style="color: #ffffff;">Symptoms</label>
-                                  <input  type="text" name="symptoms" class="form-control" value="{{v.Symptoms}}" required>
-                              </div>
-                          </div>
-                          <div class="col-12">
-                            <div class="form-group">
-                              <label style="color: #ffffff;">Date</label>
-                              <input  type="date" name="date" class="form-control" value="{{v.date1|date:'Y-m-d'}}" required>
-                            </div>
-                          </div>
-                          <div class="col-12">
-                            <div class="form-group">
-                              <label style="color: #ffffff;">Time</label>
-                              <input  type="time" name="time" class="form-control" value="{{v.time1|time:'H:i:s' }}" required>
-                            </div>
-                          </div>
-                          <div class="col-12">
-                              <div class="form-group">
-                                  <label style="color: #ffffff;">Medicine</label>
-                                  <textarea name="medicine" class="form-control" placeholder="Message....." style="color: #ffffff;"></textarea>
-                              </div>
-                          </div>
-                          </div>
-                          
-                      <hr>
-                      <input type="submit" value="Update" class="btn btn-primary">
-                  </form>
-      <br><br><br><br><br>
-  {% endblock content %}
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="symptoms">Symptoms</label>
+                            <input
+                                id="symptoms"
+                                type="text"
+                                name="symptoms"
+                                class="form-control"
+                                value="{{ v.Symptoms }}"
+                                placeholder="Enter patient symptoms"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="appointmentDate">Appointment Date</label>
+                            <input
+                                id="appointmentDate"
+                                type="date"
+                                name="date"
+                                class="form-control"
+                                value="{{ v.date1|date:'Y-m-d' }}"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="appointmentTime">Appointment Time</label>
+                            <input
+                                id="appointmentTime"
+                                type="time"
+                                name="time"
+                                class="form-control"
+                                value="{{ v.time1|time:'H:i' }}"
+                                required>
+                        </div>
+                    </div>
+
+                </div>
+
+                <h6 class="reference-section-title mt-3">
+                    <i class="fas fa-prescription mr-2"></i>
+                    Medicine & Notes
+                </h6>
+
+                <div class="form-group">
+                    <label for="medicine">Medicine / Referral Notes</label>
+                    <textarea
+                        id="medicine"
+                        name="medicine"
+                        class="form-control"
+                        placeholder="Enter prescribed medicine, dosage, treatment notes, or referral reason..."></textarea>
+                </div>
+
+                <div class="reference-actions">
+                    <button
+                        type="submit"
+                        class="btn btn-reference-submit"
+                        onclick="return confirm('Are you sure you want to refer this patient to the selected doctor?');">
+                        <i class="fas fa-paper-plane mr-2"></i>
+                        Confirm Referral
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var doctorDropdown = document.getElementById('doctorDropdown');
+        var departmentTextBox = document.getElementById('departmentTextBox');
+
+        function updateDepartment() {
+            var selectedOption =
+                doctorDropdown.options[doctorDropdown.selectedIndex];
+
+            departmentTextBox.value =
+                selectedOption && selectedOption.dataset.department
+                    ? selectedOption.dataset.department
+                    : '';
+        }
+
+        doctorDropdown.addEventListener('change', updateDepartment);
+        updateDepartment();
+    });
+</script>
+
+{% endblock content %}

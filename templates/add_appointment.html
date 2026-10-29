@@ -1,125 +1,357 @@
+
 {% extends 'admin_nav.html' %}
 {% load static %}
+
 {% block content %}
 
 <style>
-body{
-  
-  background: -webkit-linear-gradient(to right, #383737, #373737);  
-  background: linear-gradient(to bottom, #383737, #373737); 
-  }
+    body {
+        background: linear-gradient(135deg, #f1f5f9, #e8eef7);
+    }
 
+    .appointment-page {
+        max-width: 900px;
+        margin: 25px auto;
+        padding: 20px;
+    }
+
+    .appointment-card {
+        background: #ffffff;
+        border: 1px solid #e5eaf2;
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 10px 35px rgba(15, 23, 42, 0.10);
+    }
+
+    .appointment-header {
+        background: linear-gradient(135deg, #6d28d9, #7c3aed);
+        color: #ffffff;
+        padding: 28px 30px;
+    }
+
+    .appointment-header h2 {
+        font-size: 25px;
+        font-weight: 700;
+        margin: 0 0 7px;
+    }
+
+    .appointment-header p {
+        color: #ede9fe;
+        font-size: 14px;
+        margin: 0;
+    }
+
+    .appointment-form {
+        padding: 30px;
+    }
+
+    .appointment-form label {
+        color: #334155;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .appointment-form .form-control {
+        min-height: 46px;
+        border: 1px solid #dbe2ea;
+        border-radius: 9px;
+        background: #f8fafc;
+        color: #1e293b;
+        padding: 10px 13px;
+        transition: all 0.2s ease;
+    }
+
+    .appointment-form .form-control:focus {
+        border-color: #7c3aed;
+        background: #ffffff;
+        box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12);
+    }
+
+    .appointment-form .form-control[readonly] {
+        background: #f1f5f9;
+        color: #475569;
+        cursor: default;
+    }
+
+    .section-title {
+        color: #6d28d9;
+        font-size: 15px;
+        font-weight: 700;
+        margin: 5px 0 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .appointment-submit {
+        background: linear-gradient(135deg, #6d28d9, #7c3aed);
+        color: #ffffff;
+        border: none;
+        border-radius: 9px;
+        padding: 12px 25px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    .appointment-submit:hover {
+        color: #ffffff;
+        transform: translateY(-1px);
+        box-shadow: 0 5px 14px rgba(124, 58, 237, 0.25);
+    }
+
+    .appointment-reset {
+        border-radius: 9px;
+        padding: 12px 22px;
+        font-weight: 600;
+    }
+
+    .appointment-alert {
+        border-radius: 10px;
+    }
+
+    .required-star {
+        color: #dc2626;
+    }
+
+    @media (max-width: 576px) {
+        .appointment-page {
+            padding: 10px;
+            margin: 10px auto;
+        }
+
+        .appointment-header,
+        .appointment-form {
+            padding: 20px;
+        }
+
+        .appointment-header h2 {
+            font-size: 22px;
+        }
+
+        .appointment-actions .btn {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+    }
 </style>
-<body>
+
 {% if error == "no" %}
-     <script>
-	   alert(' Appoiment has taken');
-       window.location=("{% url 'view_appointment' %}");
-     </script>
+<script>
+    alert('Appointment has been booked successfully.');
+    window.location.href = "{% url 'view_appointment' %}";
+</script>
 {% endif %}
 
 {% if error == "yes" %}
-     <script>
-	    alert('Something went wrong, Try Again');
-     </script>
+<script>
+    alert('Something went wrong. Please try again.');
+</script>
 {% endif %}
 
+<div class="appointment-page">
 
-<div>
-	<br><br><br><br><br><br>
-<h1 style="color: #ffffff; text-align: center;">Add Appoiment</h1>
-             
-				<form method="post">
-                    {% csrf_token %}
-					<div class="form-row">
+    <div class="appointment-card">
 
-						<div class="col-12">
-							<div class="form-group">
-								<label style="color: #ffffff;">Doctor Name</label>
-								<select  name="doctor" class="form-control" id="doctorDropdown">
-									{% for i in doctor %}
-									<option value="{{i.id}}" data-department-id="{{ i.deparment.Department }}">{{i.name}}</option>
-									{% endfor %}
-								</select>
-							</div> 
-						</div>
-						<div class="col-12">
-							<div class="form-group">
-								<label style="color: #ffffff;" >Department</label><br>
-								<input type="text"   id="departmentTextBox" name="department" readonly class="col-12">
+        <div class="appointment-header">
+            <h2>
+                <i class="fas fa-calendar-check mr-2"></i>
+                Add Appointment
+            </h2>
+            <p>Schedule a patient appointment with the appropriate doctor.</p>
+        </div>
 
-								<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-								<script>
-									$(document).ready(function () {
-										$('#doctorDropdown').change(function () {
-											var selectedDoctor = $('#doctorDropdown option:selected');
-											var departmentId = selectedDoctor.data('department-id');
-											$('#departmentTextBox').val(departmentId);
-										});
-									});
-								</script>
-							</div>
-						</div>
+        <form method="post" class="appointment-form">
+            {% csrf_token %}
 
-<div class="col-12">
-    <div class="form-group">
-        <label style="color: #ffffff;">Patient Name</label>
-        <select name="patient" class="form-control" id="patientDropdown">
-            {% for i in patient %}
-            <option value="{{i.id}}" data-patient-id="{{ i.id }}">{{i.name}}</option>
-            {% endfor %}
-        </select>
+            <h5 class="section-title">
+                <i class="fas fa-user-md mr-2"></i>
+                Doctor & Patient Details
+            </h5>
+
+            <div class="form-row">
+
+                <div class="form-group col-md-6">
+                    <label for="doctorDropdown">
+                        Doctor Name <span class="required-star">*</span>
+                    </label>
+
+                    <select name="doctor"
+                            class="form-control"
+                            id="doctorDropdown"
+                            required>
+                        <option value="" selected disabled>Select a doctor</option>
+
+                        {% for i in doctor %}
+                        <option value="{{ i.id }}"
+                                data-department="{{ i.deparment.Department }}">
+                            {{ i.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label for="departmentTextBox">Department</label>
+                    <input type="text"
+                           id="departmentTextBox"
+                           name="department"
+                           class="form-control"
+                           placeholder="Automatically filled"
+                           readonly>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label for="patientDropdown">
+                        Patient Name <span class="required-star">*</span>
+                    </label>
+
+                    <select name="patient"
+                            class="form-control"
+                            id="patientDropdown"
+                            required>
+                        <option value="" selected disabled>Select a patient</option>
+
+                        {% for i in patient %}
+                        <option value="{{ i.id }}"
+                                data-patient-id="{{ i.id }}">
+                            {{ i.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label for="patientIdTextBox">Patient ID</label>
+                    <input type="text"
+                           id="patientIdTextBox"
+                           name="patientid"
+                           class="form-control"
+                           placeholder="Automatically generated"
+                           readonly>
+                </div>
+
+            </div>
+
+            <h5 class="section-title mt-3">
+                <i class="fas fa-clock mr-2"></i>
+                Appointment Schedule
+            </h5>
+
+            <div class="form-row">
+
+                <div class="form-group col-md-6">
+                    <label for="appointmentDate">
+                        Appointment Date <span class="required-star">*</span>
+                    </label>
+
+                    <input type="date"
+                           name="date"
+                           id="appointmentDate"
+                           class="form-control"
+                           required>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label for="appointmentTime">
+                        Appointment Time <span class="required-star">*</span>
+                    </label>
+
+                    <input type="time"
+                           name="time"
+                           id="appointmentTime"
+                           class="form-control"
+                           required>
+                </div>
+
+                <div class="form-group col-12">
+                    <label for="appointmentSymptoms">
+                        Symptoms <span class="required-star">*</span>
+                    </label>
+
+                    <input type="text"
+                           name="Sym"
+                           id="appointmentSymptoms"
+                           class="form-control"
+                           placeholder="Describe the patient's symptoms"
+                           maxlength="500"
+                           required>
+                </div>
+
+            </div>
+
+            <hr class="my-4">
+
+            <div class="appointment-actions d-flex flex-wrap">
+                <button type="submit" class="btn appointment-submit mr-2">
+                    <i class="fas fa-calendar-plus mr-2"></i>
+                    Book Appointment
+                </button>
+
+                <button type="reset" class="btn btn-outline-secondary appointment-reset">
+                    <i class="fas fa-redo mr-2"></i>
+                    Clear Form
+                </button>
+            </div>
+
+        </form>
     </div>
 </div>
 
-<div class="col-12">
-    <div class="form-group">
-        <label style="color: #ffffff;">Patient id</label><br>
-        <input type="text" id="patientIdTextBox" name="patientid" readonly class="col-12">
-    </div>
-</div>
-
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
-    $(document).ready(function () {
-        $('#patientDropdown').change(function () {
-            var selectedPatient = $('#patientDropdown option:selected');
-            var patientId = selectedPatient.data('patient-id');
-			var prefixedPatientId = 'op' + patientId; 
-            $('#patientIdTextBox').val(prefixedPatientId);
-        });
+document.addEventListener('DOMContentLoaded', function () {
+    const doctorDropdown = document.getElementById('doctorDropdown');
+    const departmentTextBox = document.getElementById('departmentTextBox');
+
+    const patientDropdown = document.getElementById('patientDropdown');
+    const patientIdTextBox = document.getElementById('patientIdTextBox');
+
+    const appointmentDate = document.getElementById('appointmentDate');
+    const appointmentForm = document.querySelector('.appointment-form');
+
+    function updateDepartment() {
+        const selectedDoctor =
+            doctorDropdown.options[doctorDropdown.selectedIndex];
+
+        departmentTextBox.value =
+            selectedDoctor && selectedDoctor.dataset.department
+                ? selectedDoctor.dataset.department
+                : '';
+    }
+
+    function updatePatientId() {
+        const selectedPatient =
+            patientDropdown.options[patientDropdown.selectedIndex];
+
+        const patientId = selectedPatient
+            ? selectedPatient.dataset.patientId
+            : '';
+
+        patientIdTextBox.value = patientId ? 'op' + patientId : '';
+    }
+
+    doctorDropdown.addEventListener('change', updateDepartment);
+    patientDropdown.addEventListener('change', updatePatientId);
+
+    appointmentForm.addEventListener('reset', function () {
+        setTimeout(function () {
+            updateDepartment();
+            updatePatientId();
+        }, 0);
     });
+
+    // Prevent selecting a past date in the browser.
+    const today = new Date();
+    const localToday = [
+        today.getFullYear(),
+        String(today.getMonth() + 1).padStart(2, '0'),
+        String(today.getDate()).padStart(2, '0')
+    ].join('-');
+
+    appointmentDate.min = localToday;
+
+    updateDepartment();
+    updatePatientId();
+});
 </script>
 
-						
-						<div class="col-12">
-							<div class="form-group">
-								<label style="color: #ffffff;" >Date</label>
-								<input type="date" name="date" class="form-control" required >
-							</div>
-						</div>
-
-						<div class="col-12">
-							<div class="form-group">
-								<label style="color: #ffffff;" >Symptoms</label>
-								<input type="text" name="Sym" class="form-control" required >
-							</div>
-						</div>
-
-                        <div class="col-12">
-							<div class="form-group">
-								<label style="color: #ffffff;">Time</label>
-								<input type="time" name="time" class="form-control" required >
-							</div>
-						</div>
-
-                    </div>
-					<hr>
-					<input type="submit" value="Submit" class="btn btn-primary">
-				</form>
-			</div>
-		</div>
-	</div>
-</div>
-<br>
 {% endblock content %}

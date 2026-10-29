@@ -1,49 +1,471 @@
+```django
 {% extends 'pharnav.html' %}
 {% load static %}
+
 {% block content %}
 
+<style>
+    .password-page {
+        padding: 28px 20px;
+        color: #1e293b;
+    }
 
-    <style>
-body{
-  
-  background: -webkit-linear-gradient(to right, #383737, #373737);  
-  background: linear-gradient(to bottom, #383737, #373737); 
-  }
-  </style>
-    <style media="screen">
-      a:link {
-        text-decoration: none;
-      }
-  
-      h6 {
+    .password-header {
         text-align: center;
-      }
-  
-   
-    </style>
-<br><br><br><br><br>
-<div class="container" style="text-align: center;">
-  <h2 style="color: white; text-align: center;">Update Password</h2>
-  <br>
-    <form action="{% url 'update_password2' %}" method="post">
-      {% csrf_token %}
-      <div class="form-group">
-        <label for="current_password" style="color: white;" >Current Password:</label>
-        <input type="password" id="nt_passwocurrerd" name="current_password" required >
-      </div>
-      <div class="form-group">
-        <label for="new_password" style="color: white;" >&nbsp&nbsp&nbsp New Password:</label>
-          <input type="password"  id="new_password" name="new_password" required title='Please use capital letters,small letters,special characters and numbers minimum 8 characters required' placeholder="new Password" pattern="(^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$)">
-      </div>
-      <div class="form-group">
-        <label style="color: white;" for="confirm_new_password" >Confirm Password:</label>
-            <input type="password"  id="confirm_new_password" name="confirm_new_password"  required title='Please use capital letters,small letters,special characters and numbers minimum 8 characters required' placeholder="Confirm Password" pattern="(^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$)">
-      </div>
-      <input type="submit"  value="Update" class="btn btn-primary" onclick="return confirm(' Are u ready to update password ?')">
-  </form>
-</div>
-<br><br><br><br><br><br><br><br>
+        margin-bottom: 26px;
+    }
 
-<br><br><br><br><br>
+    .password-header .icon-circle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 68px;
+        height: 68px;
+        border-radius: 20px;
+        background: #ccfbf1;
+        color: #0f766e;
+        font-size: 27px;
+        margin-bottom: 16px;
+    }
+
+    .password-header h2 {
+        color: #172554;
+        font-weight: 750;
+        font-size: clamp(24px, 3vw, 32px);
+        margin-bottom: 8px;
+    }
+
+    .password-header p {
+        color: #64748b;
+        margin-bottom: 0;
+    }
+
+    .password-card {
+        max-width: 650px;
+        margin: 0 auto;
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 18px;
+        padding: 30px;
+        box-shadow: 0 12px 32px rgba(15, 23, 42, 0.07);
+    }
+
+    .password-card-title {
+        color: #172554;
+        font-size: 17px;
+        font-weight: 750;
+        margin-bottom: 6px;
+    }
+
+    .password-card-description {
+        color: #64748b;
+        font-size: 13px;
+        margin-bottom: 25px;
+    }
+
+    .password-field {
+        margin-bottom: 21px;
+    }
+
+    .password-field label {
+        display: block;
+        color: #334155;
+        font-weight: 650;
+        font-size: 13px;
+        margin-bottom: 8px;
+    }
+
+    .password-input-wrap {
+        display: flex;
+        align-items: center;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+        overflow: hidden;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .password-input-wrap:focus-within {
+        border-color: #0d9488;
+        box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.12);
+    }
+
+    .password-input-wrap input {
+        flex: 1;
+        width: 100%;
+        min-width: 0;
+        height: 46px;
+        border: none;
+        outline: none;
+        padding: 0 13px;
+        color: #1e293b;
+        background: transparent;
+        font-size: 14px;
+    }
+
+    .password-input-wrap input:focus {
+        box-shadow: none;
+    }
+
+    .toggle-password {
+        border: none;
+        background: transparent;
+        color: #64748b;
+        padding: 12px 14px;
+        cursor: pointer;
+    }
+
+    .toggle-password:hover {
+        color: #0f766e;
+    }
+
+    .password-hint {
+        font-size: 12px;
+        color: #64748b;
+        margin-top: 7px;
+        line-height: 1.6;
+    }
+
+    .password-rules {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 16px;
+        margin: 6px 0 22px;
+    }
+
+    .password-rules h6 {
+        color: #334155;
+        font-size: 13px;
+        font-weight: 750;
+        margin-bottom: 12px;
+    }
+
+    .password-rules ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 9px;
+    }
+
+    .password-rules li {
+        color: #64748b;
+        font-size: 12px;
+    }
+
+    .password-rules li i {
+        margin-right: 6px;
+        color: #94a3b8;
+    }
+
+    .password-rules li.valid {
+        color: #0f766e;
+    }
+
+    .password-rules li.valid i {
+        color: #0f766e;
+    }
+
+    .password-feedback {
+        font-size: 12px;
+        margin-top: 7px;
+    }
+
+    .password-feedback.error {
+        color: #dc2626;
+    }
+
+    .password-feedback.success {
+        color: #0f766e;
+    }
+
+    .btn-update-password {
+        width: 100%;
+        min-height: 48px;
+        border: none;
+        border-radius: 10px;
+        background: #0f766e;
+        color: #fff;
+        font-weight: 700;
+        font-size: 14px;
+        transition: background 0.2s;
+    }
+
+    .btn-update-password:hover {
+        background: #115e59;
+    }
+
+    .password-security-note {
+        text-align: center;
+        margin-top: 18px;
+        color: #64748b;
+        font-size: 12px;
+    }
+
+    .password-security-note i {
+        color: #0f766e;
+        margin-right: 5px;
+    }
+
+    @media (max-width: 576px) {
+        .password-page {
+            padding: 20px 12px;
+        }
+
+        .password-card {
+            padding: 21px 16px;
+            border-radius: 14px;
+        }
+
+        .password-rules ul {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="password-page">
+
+    <div class="password-header">
+        <div class="icon-circle">
+            <i class="fas fa-lock"></i>
+        </div>
+
+        <h2>Update Password</h2>
+        <p>Protect your pharmacy account with a strong password.</p>
+    </div>
+
+    <div class="password-card">
+
+        <h5 class="password-card-title">
+            <i class="fas fa-shield-alt mr-2"></i>
+            Change Your Password
+        </h5>
+
+        <p class="password-card-description">
+            Enter your current password, then choose and confirm a new password.
+        </p>
+
+        <form
+            action="{% url 'update_password2' %}"
+            method="post"
+            id="updatePasswordForm"
+        >
+            {% csrf_token %}
+
+            <div class="password-field">
+                <label for="current_password">Current Password</label>
+
+                <div class="password-input-wrap">
+                    <input
+                        type="password"
+                        id="current_password"
+                        name="current_password"
+                        placeholder="Enter your current password"
+                        autocomplete="current-password"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        class="toggle-password"
+                        data-target="current_password"
+                        aria-label="Show or hide current password"
+                    >
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="password-field">
+                <label for="new_password">New Password</label>
+
+                <div class="password-input-wrap">
+                    <input
+                        type="password"
+                        id="new_password"
+                        name="new_password"
+                        placeholder="Create a strong new password"
+                        autocomplete="new-password"
+                        pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}"
+                        title="Use at least 8 characters, including uppercase and lowercase letters, a number, and a special character from !@#$%^&*."
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        class="toggle-password"
+                        data-target="new_password"
+                        aria-label="Show or hide new password"
+                    >
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+
+                <div class="password-hint">
+                    Minimum 8 characters with uppercase, lowercase, number, and special character.
+                </div>
+            </div>
+
+            <div class="password-field">
+                <label for="confirm_new_password">Confirm New Password</label>
+
+                <div class="password-input-wrap">
+                    <input
+                        type="password"
+                        id="confirm_new_password"
+                        name="confirm_new_password"
+                        placeholder="Re-enter your new password"
+                        autocomplete="new-password"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        class="toggle-password"
+                        data-target="confirm_new_password"
+                        aria-label="Show or hide password confirmation"
+                    >
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+
+                <div id="passwordMatchMessage" class="password-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="password-rules">
+                <h6><i class="fas fa-check-circle mr-1"></i> Password Requirements</h6>
+
+                <ul>
+                    <li id="ruleLength"><i class="fas fa-circle"></i> At least 8 characters</li>
+                    <li id="ruleLower"><i class="fas fa-circle"></i> One lowercase letter</li>
+                    <li id="ruleUpper"><i class="fas fa-circle"></i> One uppercase letter</li>
+                    <li id="ruleNumber"><i class="fas fa-circle"></i> One number</li>
+                    <li id="ruleSpecial"><i class="fas fa-circle"></i> One special character (!@#$%^&*)</li>
+                </ul>
+            </div>
+
+            <button type="submit" class="btn-update-password">
+                <i class="fas fa-key mr-2"></i>
+                Update Password
+            </button>
+
+        </form>
+
+        <div class="password-security-note">
+            <i class="fas fa-shield-alt"></i>
+            Your account security matters. Never share your password.
+        </div>
+
+    </div>
+</div>
+
+<script>
+(function () {
+    const newPassword = document.getElementById('new_password');
+    const confirmPassword = document.getElementById('confirm_new_password');
+    const matchMessage = document.getElementById('passwordMatchMessage');
+    const form = document.getElementById('updatePasswordForm');
+
+    // Show/hide password controls
+    document.querySelectorAll('.toggle-password').forEach(function (button) {
+        button.addEventListener('click', function () {
+            const input = document.getElementById(button.dataset.target);
+            const icon = button.querySelector('i');
+
+            input.type = input.type === 'password' ? 'text' : 'password';
+            icon.classList.toggle('fa-eye');
+            icon.classList.toggle('fa-eye-slash');
+        });
+    });
+
+    // Live password requirements
+    const rules = [
+        {
+            id: 'ruleLength',
+            test: function (value) { return value.length >= 8; }
+        },
+        {
+            id: 'ruleLower',
+            test: function (value) { return /[a-z]/.test(value); }
+        },
+        {
+            id: 'ruleUpper',
+            test: function (value) { return /[A-Z]/.test(value); }
+        },
+        {
+            id: 'ruleNumber',
+            test: function (value) { return /\d/.test(value); }
+        },
+        {
+            id: 'ruleSpecial',
+            test: function (value) { return /[!@#$%^&*]/.test(value); }
+        }
+    ];
+
+    function validatePassword() {
+        const value = newPassword.value;
+
+        rules.forEach(function (rule) {
+            const item = document.getElementById(rule.id);
+            const icon = item.querySelector('i');
+            const valid = rule.test(value);
+
+            item.classList.toggle('valid', valid);
+            icon.classList.toggle('fa-check-circle', valid);
+            icon.classList.toggle('fa-circle', !valid);
+        });
+
+        validateMatch();
+    }
+
+    function validateMatch() {
+        if (!confirmPassword.value) {
+            matchMessage.textContent = '';
+            matchMessage.className = 'password-feedback';
+            confirmPassword.setCustomValidity('');
+            return;
+        }
+
+        const matches = newPassword.value === confirmPassword.value;
+
+        matchMessage.textContent = matches
+            ? 'Passwords match.'
+            : 'Passwords do not match.';
+
+        matchMessage.className = matches
+            ? 'password-feedback success'
+            : 'password-feedback error';
+
+        confirmPassword.setCustomValidity(
+            matches ? '' : 'The new passwords do not match.'
+        );
+    }
+
+    newPassword.addEventListener('input', validatePassword);
+    confirmPassword.addEventListener('input', validateMatch);
+
+    form.addEventListener('submit', function (event) {
+        if (newPassword.value !== confirmPassword.value) {
+            event.preventDefault();
+            confirmPassword.setCustomValidity(
+                'The new passwords do not match.'
+            );
+            confirmPassword.reportValidity();
+            return;
+        }
+
+        if (!form.checkValidity()) {
+            event.preventDefault();
+            form.reportValidity();
+            return;
+        }
+
+        if (!window.confirm('Are you sure you want to update your password?')) {
+            event.preventDefault();
+        }
+    });
+})();
+</script>
 
 {% endblock content %}

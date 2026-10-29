@@ -1,75 +1,344 @@
+```html
 {% extends 'nav2.html' %}
 {% load static %}
+
 {% block content %}
 
-<body>
-	<style>
-body{
-  
-  background: -webkit-linear-gradient(to right, #383737, #373737);  
-  background: linear-gradient(to bottom, #383737, #373737); 
-  }
+<style>
+    .diagnosis-page {
+        padding: 24px;
+        color: #1e293b;
+    }
 
-	</style>
+    .diagnosis-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        flex-wrap: wrap;
+        margin-bottom: 24px;
+    }
 
-<br>
+    .diagnosis-header h3 {
+        font-size: 26px;
+        font-weight: 700;
+        margin: 0;
+        color: #0f2747;
+    }
 
-			<h3 class="p-2" style="text-align: center;">Diagnosis</h3>
-             <br>
-				<form method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-					<div class="form-row">
+    .diagnosis-header p {
+        color: #64748b;
+        margin: 6px 0 0;
+        font-size: 14px;
+    }
 
-						<div class="col-12">
-							<div class="form-group">
-								<label style="color: #ffffff;" >Doctor Name</label>
-								<input  type="text" name="pname" class="form-control" value="{{patient.doctor.name}}" required>
-							</div>
-						</div>
+    .diagnosis-card {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        box-shadow: 0 8px 25px rgba(15, 39, 71, 0.07);
+        overflow: hidden;
+    }
 
-                    	<div class="col-12">
-							<div class="form-group">
-								<label style="color: #ffffff;" >Patient Name</label>
-								<input  type="text" name="dname" class="form-control" value="{{patient.patient1.name}}" required>
-							</div>
-						</div>
-						<div class="col-12">
-							<div class="form-group">
-								<label style="color: #ffffff;">Patient id</label>
-								<input  type="text" name="patno" class="form-control" value="{{patient.patientno}}" >
-							</div>
-						</div>
-						<div class="col-12">
-							<div class="form-group">
-								<label style="color: #ffffff;">Date</label>
-								<input  type="date" name="date" class="form-control" value="{{patient.date1|date:'Y-m-d'}}" required>
-							</div>
-						</div>
-						<div class="col-12">
-							<div class="form-group">
-								<label style="color: #ffffff;">Time</label>
-								<input  type="time" name="time" class="form-control" value="{{ patient.time1|time:'H:i:s' }}" required>
-							</div>
-						</div>
-                        <div class="col-12">
-							<div class="form-group">
-								<label style="color: #ffffff;">Symptoms</label>
-								<input  type="text" name="symptoms" class="form-control" value="{{patient.Symptoms}}" required>
-							</div>
-						</div>
-						</div>
-                        <div class="col-12">
-							<label style="color: #ffffff;">Medicine</label>
-							<div class="form-group">
-								
-								<textarea  type="text" name="medicine" cols="150"></textarea>
-							</div>
-						</div>
-						<button type="button" class="btn btn-warning"><a href="{% url 'refer' patient.id  %}" onclick="return confirm('Are you ready to refer this record ?')" >Refer to Another Doctor</a></button>
+    .diagnosis-card-header {
+        background: linear-gradient(135deg, #0f2747, #155e75);
+        color: #fff;
+        padding: 20px 24px;
+    }
 
-						<input type="submit" value="Update" class="btn btn-primary" onclick="return confirm('Diagnosis as done ?')" >
-						</div>
+    .diagnosis-card-header h5 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 600;
+    }
 
-				</form>
+    .diagnosis-card-header p {
+        margin: 6px 0 0;
+        color: #dbeafe;
+        font-size: 13px;
+    }
+
+    .diagnosis-card-body {
+        padding: 26px;
+    }
+
+    .diagnosis-section-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: #0f2747;
+        margin-bottom: 18px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .diagnosis-page .form-group {
+        margin-bottom: 20px;
+    }
+
+    .diagnosis-page label {
+        display: block;
+        color: #334155;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .diagnosis-page .form-control {
+        height: 44px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        color: #334155;
+        font-size: 14px;
+        background: #fff;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .diagnosis-page textarea.form-control {
+        height: auto;
+        min-height: 140px;
+        resize: vertical;
+        padding: 12px;
+    }
+
+    .diagnosis-page .form-control:focus {
+        border-color: #0d9488;
+        box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.12);
+        outline: none;
+    }
+
+    .diagnosis-page .form-control[readonly] {
+        background: #f1f5f9;
+        color: #475569;
+        cursor: default;
+    }
+
+    .diagnosis-actions {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        border-top: 1px solid #e2e8f0;
+        margin-top: 10px;
+        padding-top: 22px;
+    }
+
+    .diagnosis-actions .btn {
+        padding: 11px 18px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .diagnosis-actions .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
+    }
+
+    .btn-refer {
+        background: #fff7ed;
+        border: 1px solid #fed7aa;
+        color: #c2410c !important;
+    }
+
+    .btn-refer:hover {
+        background: #ffedd5;
+    }
+
+    .btn-update {
+        background: #0d9488;
+        border-color: #0d9488;
+        color: #fff;
+    }
+
+    .btn-update:hover {
+        background: #0f766e;
+        border-color: #0f766e;
+        color: #fff;
+    }
+
+    @media (max-width: 767px) {
+        .diagnosis-page {
+            padding: 16px 10px;
+        }
+
+        .diagnosis-header h3 {
+            font-size: 23px;
+        }
+
+        .diagnosis-card-body {
+            padding: 18px 15px;
+        }
+
+        .diagnosis-card-header {
+            padding: 18px;
+        }
+
+        .diagnosis-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .diagnosis-actions .btn {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="diagnosis-page">
+
+    <div class="diagnosis-header">
+        <div>
+            <h3><i class="fas fa-stethoscope mr-2"></i> Diagnosis</h3>
+            <p>Review patient information and record the treatment plan.</p>
+        </div>
+    </div>
+
+    <div class="diagnosis-card">
+
+        <div class="diagnosis-card-header">
+            <h5><i class="fas fa-file-medical mr-2"></i> Patient Diagnosis Form</h5>
+            <p>Verify the appointment details before updating the diagnosis.</p>
+        </div>
+
+        <div class="diagnosis-card-body">
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <h6 class="diagnosis-section-title">
+                    <i class="fas fa-user-injured mr-2"></i>
+                    Patient & Appointment Details
+                </h6>
+
+                <div class="form-row">
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="doctorName">Doctor Name</label>
+                            <input
+                                id="doctorName"
+                                type="text"
+                                name="pname"
+                                class="form-control"
+                                value="{{ patient.doctor.name }}"
+                                readonly
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="patientName">Patient Name</label>
+                            <input
+                                id="patientName"
+                                type="text"
+                                name="dname"
+                                class="form-control"
+                                value="{{ patient.patient1.name }}"
+                                readonly
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="patientId">Patient ID</label>
+                            <input
+                                id="patientId"
+                                type="text"
+                                name="patno"
+                                class="form-control"
+                                value="{{ patient.patientno }}"
+                                readonly>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="appointmentDate">Appointment Date</label>
+                            <input
+                                id="appointmentDate"
+                                type="date"
+                                name="date"
+                                class="form-control"
+                                value="{{ patient.date1|date:'Y-m-d' }}"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="appointmentTime">Appointment Time</label>
+                            <input
+                                id="appointmentTime"
+                                type="time"
+                                name="time"
+                                class="form-control"
+                                value="{{ patient.time1|time:'H:i' }}"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="symptoms">Symptoms</label>
+                            <input
+                                id="symptoms"
+                                type="text"
+                                name="symptoms"
+                                class="form-control"
+                                value="{{ patient.Symptoms }}"
+                                placeholder="Enter patient symptoms"
+                                required>
+                        </div>
+                    </div>
+
+                </div>
+
+                <h6 class="diagnosis-section-title mt-3">
+                    <i class="fas fa-pills mr-2"></i>
+                    Diagnosis & Medication
+                </h6>
+
+                <div class="form-group">
+                    <label for="medicine">Medicine / Prescription</label>
+                    <textarea
+                        id="medicine"
+                        name="medicine"
+                        class="form-control"
+                        rows="5"
+                        placeholder="Enter diagnosis, prescribed medicines, dosage, and instructions..."></textarea>
+                    <small class="form-text text-muted">
+                        Include dosage and usage instructions where applicable.
+                    </small>
+                </div>
+
+                <div class="diagnosis-actions">
+
+                    <a
+                        href="{% url 'refer' patient.id %}"
+                        class="btn btn-refer"
+                        onclick="return confirm('Are you sure you want to refer this patient to another doctor?');">
+                        <i class="fas fa-share-square mr-2"></i>
+                        Refer to Another Doctor
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="btn btn-update"
+                        onclick="return confirm('Are you sure you want to save this diagnosis?');">
+                        <i class="fas fa-save mr-2"></i>
+                        Update Diagnosis
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
 
 {% endblock content %}

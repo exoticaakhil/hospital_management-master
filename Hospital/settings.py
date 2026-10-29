@@ -75,13 +75,13 @@ WSGI_APPLICATION = 'Hospital.wsgi.application'
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 DATABASES = {
-'default': {
-       'ENGINE': 'django.db.backends.mysql',
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
         'NAME': 'hsdb',
-        'USER':'root',
-        'PASSWORD':'',
-        'HOST':'localhost',
-        'PORT':'3306',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
     }
 }
 
@@ -134,5 +134,5 @@ EMAIL_HOST='smtp.gmail.com'
 EMAIL_USE_TLS=True
 EMAIL_PORT=587
 EMAIL_HOST_USER='akhilanilvly@gmail.com'
-EMAIL_HOST_PASSWORD='zvxy vwiv nmjl dyyc'
+EMAIL_HOST_PASSWORD='dfkx vfiv jlhr iyot'
 

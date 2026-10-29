@@ -1,98 +1,281 @@
+
 {% extends 'navigationbase.html' %}
 {% load static %}
+
 {% block content %}
 
 <style>
-  body{
-  
-  background: -webkit-linear-gradient(to right, #383737, #373737);  
-  background: linear-gradient(to bottom, #383737, #373737); 
+  body {
+    background: linear-gradient(135deg, #eef5f9, #dcebf2);
+  }
+
+  .contact-section {
+    padding: 60px 0;
+  }
+
+  .contact-card {
+    border: none;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 12px 40px rgba(0, 50, 80, 0.12);
+  }
+
+  .contact-info {
+    background: linear-gradient(145deg, #087f8c, #075985);
+    color: white;
+    padding: 40px 30px;
+    height: 100%;
+  }
+
+  .contact-info h2 {
+    font-weight: 700;
+    margin-bottom: 15px;
+  }
+
+  .contact-info p {
+    color: #e5f5fa;
+    line-height: 1.8;
+  }
+
+  .contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    margin-top: 35px;
+  }
+
+  .contact-icon {
+    min-width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.17);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 21px;
+  }
+
+  .contact-form {
+    padding: 40px;
+    background: #fff;
+  }
+
+  .contact-form h2 {
+    color: #123047;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .contact-form .subtitle {
+    color: #718096;
+    margin-bottom: 28px;
+  }
+
+  .contact-form label {
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 8px;
+  }
+
+  .contact-form .form-control {
+    border: 1px solid #dbe4eb;
+    border-radius: 9px;
+    padding: 12px 14px;
+    min-height: 46px;
+    box-shadow: none;
+  }
+
+  .contact-form .form-control:focus {
+    border-color: #0891b2;
+    box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.12);
+  }
+
+  .contact-form textarea.form-control {
+    min-height: 130px;
+    resize: vertical;
+  }
+
+  .btn-send {
+    background: #087f8c;
+    color: #fff;
+    border: none;
+    border-radius: 9px;
+    padding: 13px 20px;
+    font-weight: 600;
+    transition: 0.3s;
+  }
+
+  .btn-send:hover {
+    background: #075985;
+    color: #fff;
+    transform: translateY(-2px);
+  }
+
+  .btn-clear {
+    border-radius: 9px;
+    padding: 12px 20px;
+    font-weight: 600;
+  }
+
+  @media (max-width: 767px) {
+    .contact-section {
+      padding: 30px 12px;
+    }
+
+    .contact-info,
+    .contact-form {
+      padding: 28px 22px;
+    }
   }
 </style>
-<br><br>
-<div>
-<div class="container py-5 mt-3">
-  <div class="card">
-    <div class="card-body">
-      <h1 class="font-weight-light text-center py-3">Contact Us</h1>
-      <div class="row">
-        <div class="col-lg-6 col-md-12 col-sm-12">
 
-         <div class="row pt-3">
-           <div class="col-lg-1 offset-1 col-md-2 col-sm-2">
-             <span style="font-size: 30px; color: cadetblue"><i class="fas fa-map-marker-alt"></i></span>
-           </div>
+<div class="container contact-section">
+  <div class="card contact-card">
+    <div class="row no-gutters">
 
-            <div class="col-lg-10 col-md-9 col-sm-9">
-              <h3 class="font-weight-light">Find Us at the office</h3>
-              <p>xyz<br>
-                B Sector, walk-street<br>
-                kochi
+      <!-- Hospital Contact Information -->
+      <div class="col-lg-5">
+        <div class="contact-info">
+          <h2>Contact Us</h2>
+          <p>
+            We're here to help you. Contact MAK HOSPITAL
+            for enquiries and assistance.
+          </p>
+
+          <div class="contact-item">
+            <div class="contact-icon">
+              <i class="fas fa-map-marker-alt"></i>
+            </div>
+            <div>
+              <h5>Visit Our Hospital</h5>
+              <p>
+                MAK HOSPITAL<br>
+                B Sector, Walk Street<br>
+                Kochi, Kerala, India
               </p>
-           </div>
-         </div>
+            </div>
+          </div>
 
-         <div class="row pt-3">
-           <div class="col-lg-1 offset-1 col-md-2 col-sm-2">
-             <span style="font-size: 30px; color: coral"><i class="fas fa-phone-volume"></i></span>
-           </div>
-
-            <div class="col-lg-10 col-md-9 col-sm-9">
-              <h3 class="font-weight-light">Give Us a Ring</h3>
-              <p>MAK HOSPITAL<br>
-                +91 9072477900<br>
-                
+          <div class="contact-item">
+            <div class="contact-icon">
+              <i class="fas fa-phone-alt"></i>
+            </div>
+            <div>
+              <h5>Call Us</h5>
+              <p>
+                <a href="tel:+919072477900"
+                   class="text-white text-decoration-none">
+                  +91 9072477900
+                </a>
               </p>
-           </div>
-         </div>
+            </div>
+          </div>
 
+          <div class="contact-item">
+            <div class="contact-icon">
+              <i class="fas fa-clock"></i>
+            </div>
+            <div>
+              <h5>We're Here for You</h5>
+              <p>
+                Contact us for general enquiries
+                and hospital information.
+              </p>
+            </div>
+          </div>
         </div>
+      </div>
 
-        <div class="col-lg-6 col-md-12 col-sm-12">
-			<div class="container-fluid">
-				<form action="{% url 'contact' %}" method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-					<div class="form-row">
+      <!-- Contact Form -->
+      <div class="col-lg-7">
+        <div class="contact-form">
+          <h2>Send Us a Message</h2>
+          <p class="subtitle">
+            Fill in the details below and we'll assist you.
+          </p>
 
-            <div class="form-group col-lg-6 col-md-12 col-sm-12">
-              <label>Full Name</label>
-              <input type="text" name="name" class="form-control" placeholder="Full Name" required>
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-{{ message.tags }} alert-dismissible fade show"
+                   role="alert">
+                {{ message }}
+                <button type="button" class="close"
+                        data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            {% endfor %}
+          {% endif %}
+
+          <form action="{% url 'contact' %}"
+                method="post">
+            {% csrf_token %}
+
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name"
+                       class="form-control"
+                       placeholder="Enter your full name"
+                       maxlength="100" required>
+              </div>
+
+              <div class="form-group col-md-6">
+                <label for="contact">Contact Number</label>
+                <input type="tel" id="contact" name="contact"
+                       class="form-control"
+                       placeholder="Enter phone number"
+                       maxlength="15" required>
+              </div>
             </div>
 
-            <div class="form-group col-lg-6 col-md-12 col-sm-12">
-              <label>Contact Number</label>
-              <input type="text" name="contact" class="form-control" placeholder="Contact Number" required>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email"
+                       class="form-control"
+                       placeholder="Enter your email"
+                       maxlength="254" required>
+              </div>
+
+              <div class="form-group col-md-6">
+                <label for="subject">Subject</label>
+                <input type="text" id="subject" name="subject"
+                       class="form-control"
+                       placeholder="Enter subject"
+                       maxlength="200" required>
+              </div>
             </div>
 
-            <div class="form-group col-lg-6 col-md-12 col-sm-12">
-              <label>Email Id</label>
-              <input type="email" name="email" class="form-control" placeholder="Email ID" required>
+            <div class="form-group">
+              <label for="message">Your Message</label>
+              <textarea id="message" name="message"
+                        class="form-control"
+                        placeholder="How can we help you?"
+                        maxlength="5000" required></textarea>
             </div>
 
-             <div class="form-group col-lg-6 col-md-12 col-sm-12">
-              <label>Subject</label>
-              <input type="text" name="subject" class="form-control" placeholder="Enter Subject" required>
-            </div>
+            <div class="form-row mt-4">
+              <div class="col-md-8 mb-2">
+                <button type="submit" class="btn btn-send btn-block">
+                  <i class="fas fa-paper-plane mr-2"></i>
+                  Send Message
+                </button>
+              </div>
 
-             <div class="form-group col-lg-12 col-md-12 col-sm-12">
-              <label>Message</label>
-              <textarea name="message" class="form-control" placeholder="Message....."></textarea>
+              <div class="col-md-4 mb-2">
+                <button type="reset"
+                        class="btn btn-outline-secondary btn-clear btn-block">
+                  Clear Form
+                </button>
+              </div>
             </div>
+          </form>
+        </div>
+      </div>
 
-             <div class="form-group col-lg-6 col-md-12 col-sm-12">
-               <input type="submit" value="Send" class="form-control btn btn-primary">
-             </div>
-
-            <div class="form-group col-lg-6 col-md-12 col-sm-12">
-               <input type="reset" value="Clear" class="form-control btn btn-primary">
-            </div>
-				</form>
-			</div>
-		</div>
-	</div>
-  </div>
+    </div>
   </div>
 </div>
-</div>
+
 {% endblock %}
-

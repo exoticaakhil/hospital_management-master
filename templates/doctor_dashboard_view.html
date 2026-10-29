@@ -1,69 +1,554 @@
+
 {% extends 'nav2.html' %}
 {% load static %}
+
 {% block content %}
-    <style>
-body{
-  
-  background: -webkit-linear-gradient(to right, #383737, #373737);  
-  background: linear-gradient(to bottom, #383737, #373737); 
-  }
 
-      a:link {
-        text-decoration: none;
-      }
+<style>
+    .diagnosis-page {
+        min-height: 100vh;
+        padding: 28px;
+        background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+        color: #1e293b;
+    }
 
-    </style>
+    .diagnosis-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 25px;
+    }
 
-  <br><br><br><br><br><br>
-  <h1 style="color:white;">Search of Past Diagnosis</h1><br>
-  <form class="form-inline" action="{% url 'search_view2' %}" method="get">
-    <input class="form-control " type="search" placeholder="Search" name="query" aria-label="Search">
-    <button class="btn btn-outline-success  " type="submit">Search</button>
-  </form>
-  <h1 style="color:white;">Search of Diagnosis</h1><br>
-  <form class="form-inline" action="{% url 'search_view4' %}" method="get">
-    <input class="form-control mr-2" type="search" placeholder="Search" name="query" aria-label="Search" >
-    <button class="btn btn-outline-success my-2 my-0" type="submit" >Search</button>
-  </form>
+    .diagnosis-header h2 {
+        font-size: 27px;
+        font-weight: 700;
+        margin: 0 0 6px;
+        color: #0f172a;
+    }
 
-  <h5 style="text-align: center; color:white;">Appoiments</h5>
-  <div class="table-responsive">
-  <table class="table table-primary">
-    <thead class="thead-dark">
-                      <tr>
-                        <th scope="col">Doctor Name</th>
-                        <th scope="col">Patient Name</th>
-                        <th scope="col">Specialization</th>
-                        <th scope="col">Patient_id</th>
-                        <th scope="col">Date</th>
-                        <th scope="col">Time</th>
-                        <th scope="col">token</th>
-                        <th scope="col">Symptoms</th>
-                        <th scope="col" colspan="2">Action</th>
-                      </tr>
-                    </thead>
-              
-                    <tbody>
-                          {% for i in appointment %}
+    .diagnosis-header p {
+        color: #64748b;
+        margin: 0;
+        font-size: 14px;
+    }
+
+    .diagnosis-badge {
+        background: #ccfbf1;
+        color: #0f766e;
+        padding: 9px 15px;
+        border-radius: 30px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .diagnosis-search-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+        margin-bottom: 28px;
+    }
+
+    .diagnosis-search-card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 23px;
+        box-shadow: 0 5px 20px rgba(15, 23, 42, .05);
+        border: 1px solid #e2e8f0;
+    }
+
+    .search-icon {
+        display: inline-flex;
+        width: 45px;
+        height: 45px;
+        align-items: center;
+        justify-content: center;
+        background: #ccfbf1;
+        color: #0f766e;
+        border-radius: 12px;
+        font-size: 19px;
+        margin-bottom: 15px;
+    }
+
+    .diagnosis-search-card h5 {
+        font-weight: 700;
+        font-size: 17px;
+        margin-bottom: 7px;
+        color: #0f172a;
+    }
+
+    .diagnosis-search-card p {
+        color: #64748b;
+        font-size: 13px;
+        margin-bottom: 17px;
+    }
+
+    .diagnosis-search-form {
+        display: flex;
+        gap: 9px;
+    }
+
+    .diagnosis-search-form .form-control {
+        min-width: 0;
+        height: 43px;
+        border: 1px solid #cbd5e1;
+        border-radius: 9px;
+        box-shadow: none;
+    }
+
+    .diagnosis-search-form .form-control:focus {
+        border-color: #14b8a6;
+        box-shadow: 0 0 0 3px rgba(20, 184, 166, .12);
+    }
+
+    .btn-search {
+        height: 43px;
+        border: none;
+        border-radius: 9px;
+        padding: 0 17px;
+        background: #0f766e;
+        color: #fff;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .btn-search:hover {
+        background: #115e59;
+        color: #fff;
+    }
+
+    .appointments-card {
+        background: #fff;
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 5px 20px rgba(15, 23, 42, .05);
+    }
+
+    .appointments-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 22px 24px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .appointments-card-header h4 {
+        font-size: 19px;
+        font-weight: 700;
+        margin: 0;
+        color: #0f172a;
+    }
+
+    .appointments-card-header p {
+        font-size: 12px;
+        color: #64748b;
+        margin: 5px 0 0;
+    }
+
+    .appointment-count {
+        background: #f1f5f9;
+        color: #475569;
+        padding: 7px 12px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .table-search-wrap {
+        padding: 16px 24px 0;
+    }
+
+    .table-search {
+        max-width: 340px;
+        width: 100%;
+        height: 40px;
+        padding: 8px 13px;
+        border: 1px solid #cbd5e1;
+        border-radius: 9px;
+        outline: none;
+    }
+
+    .table-search:focus {
+        border-color: #14b8a6;
+    }
+
+    .appointments-table {
+        margin: 0;
+        min-width: 1050px;
+    }
+
+    .appointments-table thead th {
+        background: #0f172a;
+        color: #fff;
+        border: none;
+        padding: 15px 13px;
+        font-size: 12px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .appointments-table tbody td {
+        padding: 14px 13px;
+        vertical-align: middle;
+        color: #475569;
+        font-size: 13px;
+        border-color: #e2e8f0;
+    }
+
+    .appointments-table tbody tr:hover {
+        background: #f8fafc;
+    }
+
+    .patient-name {
+        color: #0f172a;
+        font-weight: 700;
+    }
+
+    .patient-id {
+        background: #eff6ff;
+        color: #1d4ed8;
+        padding: 5px 8px;
+        border-radius: 6px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .token-badge {
+        background: #ccfbf1;
+        color: #0f766e;
+        padding: 5px 9px;
+        border-radius: 6px;
+        font-weight: 700;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 7px;
+    }
+
+    .btn-diagnosis,
+    .btn-delete-appointment {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 8px 10px;
+        border-radius: 7px;
+        font-size: 12px;
+        font-weight: 600;
+        text-decoration: none !important;
+        white-space: nowrap;
+        border: none;
+    }
+
+    .btn-diagnosis {
+        background: #ccfbf1;
+        color: #0f766e;
+    }
+
+    .btn-diagnosis:hover {
+        background: #99f6e4;
+        color: #115e59;
+    }
+
+    .btn-delete-appointment {
+        background: #fee2e2;
+        color: #b91c1c;
+    }
+
+    .btn-delete-appointment:hover {
+        background: #fecaca;
+        color: #991b1b;
+    }
+
+    .no-appointments {
+        text-align: center;
+        padding: 45px 20px !important;
+        color: #64748b !important;
+    }
+
+    .no-appointments i {
+        display: block;
+        font-size: 35px;
+        color: #94a3b8;
+        margin-bottom: 12px;
+    }
+
+    .no-appointments strong {
+        display: block;
+        font-size: 15px;
+        color: #334155;
+        margin-bottom: 5px;
+    }
+
+    .no-appointments span {
+        font-size: 12px;
+    }
+
+    @media (max-width: 767px) {
+        .diagnosis-page {
+            padding: 18px 12px;
+        }
+
+        .diagnosis-header h2 {
+            font-size: 22px;
+        }
+
+        .diagnosis-search-grid {
+            grid-template-columns: 1fr;
+            gap: 14px;
+        }
+
+        .diagnosis-search-card {
+            padding: 18px;
+        }
+
+        .appointments-card-header {
+            padding: 18px;
+        }
+
+        .table-search-wrap {
+            padding: 15px 18px 0;
+        }
+    }
+
+    @media (max-width: 420px) {
+        .diagnosis-search-form {
+            flex-direction: column;
+        }
+
+        .diagnosis-search-form .btn-search {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="diagnosis-page">
+
+    <!-- Page heading -->
+    <div class="diagnosis-header">
+        <div>
+            <h2>
+                <i class="fas fa-stethoscope mr-2"></i>
+                Diagnosis Management
+            </h2>
+            <p>Search patient diagnosis records and manage appointments.</p>
+        </div>
+
+        <span class="diagnosis-badge">
+            <i class="fas fa-heartbeat mr-1"></i>
+            Doctor Portal
+        </span>
+    </div>
+
+    <!-- Search cards -->
+    <div class="diagnosis-search-grid">
+
+        <div class="diagnosis-search-card">
+            <div class="search-icon">
+                <i class="fas fa-history"></i>
+            </div>
+
+            <h5>Search Past Diagnosis</h5>
+            <p>Find previous diagnosis records using a patient ID or supported search term.</p>
+
+            <form class="diagnosis-search-form"
+                  action="{% url 'search_view2' %}"
+                  method="get">
+
+                <input
+                    class="form-control"
+                    type="search"
+                    name="query"
+                    placeholder="Enter patient ID..."
+                    aria-label="Search past diagnosis"
+                    required>
+
+                <button class="btn btn-search" type="submit">
+                    <i class="fas fa-search mr-1"></i> Search
+                </button>
+            </form>
+        </div>
+
+        <div class="diagnosis-search-card">
+            <div class="search-icon">
+                <i class="fas fa-notes-medical"></i>
+            </div>
+
+            <h5>Search Diagnosis</h5>
+            <p>Search diagnosis information using the available patient records.</p>
+
+            <form class="diagnosis-search-form"
+                  action="{% url 'search_view4' %}"
+                  method="get">
+
+                <input
+                    class="form-control"
+                    type="search"
+                    name="query"
+                    placeholder="Enter search term..."
+                    aria-label="Search diagnosis"
+                    required>
+
+                <button class="btn btn-search" type="submit">
+                    <i class="fas fa-search mr-1"></i> Search
+                </button>
+            </form>
+        </div>
+
+    </div>
+
+    <!-- Appointments table -->
+    <div class="appointments-card">
+
+        <div class="appointments-card-header">
+            <div>
+                <h4>
+                    <i class="fas fa-calendar-check mr-2"></i>
+                    Appointments
+                </h4>
+                <p>Review appointment details and open patient diagnosis.</p>
+            </div>
+
+            <span class="appointment-count">
+                {{ appointment|length }} appointment{{ appointment|length|pluralize }}
+            </span>
+        </div>
+
+        <!-- Client-side table search -->
+        <div class="table-search-wrap">
+            <input
+                type="search"
+                id="appointmentTableSearch"
+                class="table-search"
+                placeholder="Filter appointments..."
+                aria-label="Filter appointments">
+        </div>
+
+        <div class="table-responsive mt-3">
+            <table class="table appointments-table">
+                <thead>
                     <tr>
-                      <td>{{i.doctor.name}}</td>
-                      <td>{{i.patient1.name}}</td>
-                      <td>{{i.deparment}}</td>
-                      <td>{{i.patientno}}</td>
-                      <td>{{i.date1}}</td>
-                      <td>{{i.time1}}</td>
-                      <td>{{i.token}}</td>
-                      <td>{{i.Symptoms}}</td>
-                    <td><a href="{% url 'editpatient' i.id %}" onclick="return confirm('diagnosis ?')" class="btn btn-danger">Diagnosis</a></td>
-                    <td><a href="{% url 'delete2' i.id %}" onclick="return confirm('Delete the Appoiment ?')" class="btn btn-danger">Delete</a></td>
-                   
-                  </tr>
-                   {% endfor %}
+                        <th>Doctor Name</th>
+                        <th>Patient Name</th>
+                        <th>Specialization</th>
+                        <th>Patient ID</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Token</th>
+                        <th>Symptoms</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody id="appointmentTableBody">
+
+                    {% for i in appointment %}
+                    <tr class="appointment-row">
+                        <td>{{ i.doctor.name|default:"—" }}</td>
+
+                        <td>
+                            <span class="patient-name">
+                                {{ i.patient1.name|default:"—" }}
+                            </span>
+                        </td>
+
+                        <td>{{ i.deparment|default:"—" }}</td>
+
+                        <td>
+                            <span class="patient-id">
+                                {{ i.patientno|default:"—" }}
+                            </span>
+                        </td>
+
+                        <td>{{ i.date1|default:"—" }}</td>
+                        <td>{{ i.time1|default:"—" }}</td>
+
+                        <td>
+                            <span class="token-badge">
+                                {{ i.token|default:"—" }}
+                            </span>
+                        </td>
+
+                        <td>{{ i.Symptoms|default:"—" }}</td>
+
+                        <td>
+                            <div class="action-buttons">
+                                <a href="{% url 'editpatient' i.id %}"
+                                   class="btn-diagnosis"
+                                   onclick="return confirm('Open diagnosis for this appointment?');">
+                                    <i class="fas fa-file-medical"></i>
+                                    Diagnosis
+                                </a>
+
+                                <a href="{% url 'delete2' i.id %}"
+                                   class="btn-delete-appointment"
+                                   onclick="return confirm('Are you sure you want to delete this appointment?');">
+                                    <i class="fas fa-trash-alt"></i>
+                                    Delete
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+
+                    {% empty %}
+                    <tr>
+                        <td colspan="9" class="no-appointments">
+                            <i class="fas fa-calendar-times"></i>
+                            <strong>No appointments found</strong>
+                            <span>Appointments will appear here when records are available.</span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                    <tr id="noSearchResults" style="display: none;">
+                        <td colspan="9" class="no-appointments">
+                            <i class="fas fa-search"></i>
+                            <strong>No matching appointments</strong>
+                            <span>Try a different patient name, doctor, ID, or symptom.</span>
+                        </td>
+                    </tr>
+
                 </tbody>
-		</table>
-  </table>
+            </table>
+        </div>
 
-<br><br><br><br><br><br><br><br>
+    </div>
 
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('appointmentTableSearch');
+        const rows = document.querySelectorAll('.appointment-row');
+        const noResults = document.getElementById('noSearchResults');
+
+        if (!searchInput) return;
+
+        searchInput.addEventListener('input', function () {
+            const query = this.value.trim().toLowerCase();
+            let visibleCount = 0;
+
+            rows.forEach(function (row) {
+                const matches = row.textContent.toLowerCase().includes(query);
+
+                row.style.display = matches ? '' : 'none';
+
+                if (matches) {
+                    visibleCount++;
+                }
+            });
+
+            if (noResults) {
+                noResults.style.display =
+                    rows.length > 0 && visibleCount === 0 ? '' : 'none';
+            }
+        });
+    });
+</script>
 
 {% endblock content %}

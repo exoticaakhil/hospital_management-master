@@ -1,63 +1,255 @@
+
 {% extends 'pharnav.html' %}
 {% load static %}
+
 {% block content %}
 
-
-  <style>
- body{
- background: -webkit-linear-gradient(to right, #383737, #373737);  
-    background: linear-gradient(to bottom, #383737, #373737); 
+<style>
+    .past-history-page {
+        padding: 24px;
+        color: #1e293b;
     }
 
+    .page-header {
+        margin-bottom: 24px;
+    }
 
-  </style>
+    .page-header h2 {
+        color: #172554;
+        font-size: clamp(24px, 3vw, 32px);
+        font-weight: 750;
+        margin-bottom: 8px;
+    }
 
+    .page-header p {
+        color: #64748b;
+        margin: 0;
+    }
+
+    .results-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 22px;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+    }
+
+    .results-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .results-heading h5 {
+        color: #172554;
+        font-weight: 750;
+        margin: 0;
+    }
+
+    .results-count {
+        background: #ccfbf1;
+        color: #115e59;
+        border-radius: 20px;
+        padding: 7px 12px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .table-responsive {
+        border-radius: 10px;
+    }
+
+    .history-table {
+        width: 100%;
+        margin-bottom: 0;
+        vertical-align: middle;
+    }
+
+    .history-table thead th {
+        background: #172554;
+        color: #ffffff;
+        border: none;
+        padding: 15px 13px;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.35px;
+        white-space: nowrap;
+    }
+
+    .history-table tbody td {
+        color: #475569;
+        padding: 15px 13px;
+        border-color: #edf2f7;
+        font-size: 13px;
+    }
+
+    .history-table tbody tr:hover {
+        background: #f0fdfa;
+    }
+
+    .patient-id {
+        display: inline-block;
+        padding: 5px 9px;
+        border-radius: 6px;
+        background: #f1f5f9;
+        color: #334155;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .medicine-value {
+        color: #0f766e !important;
+        font-weight: 650;
+    }
+
+    .symptoms-value {
+        min-width: 140px;
+        max-width: 280px;
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 55px 20px;
+    }
+
+    .empty-state i {
+        color: #94a3b8;
+        font-size: 44px;
+        margin-bottom: 16px;
+    }
+
+    .empty-state h5 {
+        color: #172554;
+        font-weight: 750;
+        margin-bottom: 8px;
+    }
+
+    .empty-state p {
+        color: #64748b;
+        margin-bottom: 0;
+    }
+
+    .search-again {
+        display: inline-block;
+        margin-top: 18px;
+        background: #0f766e;
+        color: #ffffff;
+        text-decoration: none;
+        padding: 10px 16px;
+        border-radius: 9px;
+        font-weight: 600;
+    }
+
+    .search-again:hover {
+        color: #ffffff;
+        background: #115e59;
+        text-decoration: none;
+    }
+
+    @media (max-width: 767px) {
+        .past-history-page {
+            padding: 16px 12px;
+        }
+
+        .results-card {
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        .history-table thead th,
+        .history-table tbody td {
+            padding: 12px 10px;
+        }
+    }
 </style>
-<br><br><br><br><br><br>
-{%if products%}
-  <h3 style="text-align:center; color:#ffffff;">{{word}}</h3>
-  <br>
-  
-  <!-- products data start -->
 
+<div class="past-history-page">
 
-  <h5 style="text-align: center; color:white;">Past Patient History</h5>
-  <div class="table-responsive">
-  <table class="table table-primary">
-    <thead class="thead-dark">
-			<tr>
-			  <th scope="col">Doctor</th>
-			  <th scope="col">Patient </th>
-			  <th scope="col">Patient ID</th>
-			  <th scope="col">Date</th>
-			  <th scope="col">time</th>
-			  <th scope="col">Medicine</th>
-			  <th scope="col">Symptoms</th>
+    <div class="page-header">
+        <h2>
+            <i class="fas fa-history mr-2"></i>
+            Past Patient History
+        </h2>
+        <p>Review previous patient diagnoses, symptoms, and prescribed medicines.</p>
+    </div>
 
-			</tr>
-		  </thead>
-		  <tbody>
+    {% if products %}
 
-	  <tbody>
-	  {% for p in products %}
-	  <tr>
-		  <td scope="col">{{p.Doctor1}}</td>
-		  <td scope="col">{{p.Patient1}}</td>
-		  <td scope="col">{{p.Patientno}}</td>
-		  <td scope="col">{{p.date1}}</td>
-		  <td scope="col">{{p.time1}}</td>
-		  <td scope="col">{{p.medicine}}</td>
-		  <td scope="col">{{p.Symptoms}}</td>
-  
-	  </tr>
-	  {% endfor %}
-	  </tbody>
-  </table>
-  </div>
+        <div class="results-card">
 
-{%else%}
-<h3 style="text-align:center; color:#ffffff;">No Search Found</h3>
-<br><br><br><br><br><br><br><br>
-{%endif%}
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+            <div class="results-heading">
+                <h5>
+                    <i class="fas fa-notes-medical mr-2"></i>
+                    {{ word|default:"Search Results" }}
+                </h5>
+
+                <span class="results-count">
+                    {{ products|length }} record{{ products|length|pluralize }}
+                </span>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table history-table">
+                    <thead>
+                        <tr>
+                            <th>Doctor</th>
+                            <th>Patient</th>
+                            <th>Patient ID</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Medicine</th>
+                            <th>Symptoms</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for p in products %}
+                        <tr>
+                            <td>{{ p.Doctor1|default:"—" }}</td>
+                            <td>{{ p.Patient1|default:"—" }}</td>
+                            <td>
+                                <span class="patient-id">
+                                    {{ p.Patientno|default:"—" }}
+                                </span>
+                            </td>
+                            <td>{{ p.date1|default:"—" }}</td>
+                            <td>{{ p.time1|default:"—" }}</td>
+                            <td class="medicine-value">
+                                {{ p.medicine|default:"—" }}
+                            </td>
+                            <td class="symptoms-value">
+                                {{ p.Symptoms|default:"—" }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+    {% else %}
+
+        <div class="results-card">
+            <div class="empty-state">
+                <i class="fas fa-folder-open"></i>
+                <h5>No Search Results Found</h5>
+                <p>No past patient history matched your search.</p>
+
+                <a href="{% url 'pharmacy' %}" class="search-again">
+                    <i class="fas fa-home mr-1"></i>
+                    Back to Dashboard
+                </a>
+            </div>
+        </div>
+
+    {% endif %}
+
+</div>
+
 {% endblock content %}

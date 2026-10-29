@@ -1,66 +1,468 @@
+
 {% extends 'nav2.html' %}
 {% load static %}
+
 {% block content %}
 
+<style>
+    .past-diagnosis-page {
+        min-height: 100vh;
+        padding: 28px;
+        background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+        color: #1e293b;
+    }
 
-    <style>
-body{
-  
-  background: -webkit-linear-gradient(to right, #383737, #373737);  
-  background: linear-gradient(to bottom, #383737, #373737); 
-  }
+    .diagnosis-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 25px;
+    }
 
-  
-      a:link {
-        text-decoration: none;
-      }
-  
-    
-    </style>
+    .diagnosis-header h2 {
+        margin: 0 0 7px;
+        color: #0f172a;
+        font-size: 27px;
+        font-weight: 700;
+    }
 
-        <br><br><br><br><br><br>
-    <h1 style="color:white;">Search of Past Diagnosis</h1><br>
-  <form class="form-inline" action="{% url "search_view2" %}" method="get">
-    <input class="form-control " type="search" placeholder="Search" name="query" aria-label="Search">
-    <button class="btn btn-outline-success" type="submit">Search</button>
-  </form>
-  {%if products%}
-    <h3 style=" color:#e0e3e6;">{{word}}</h3>
+    .diagnosis-header p {
+        margin: 0;
+        color: #64748b;
+        font-size: 14px;
+    }
 
-    <h5 style="text-align: center; color:white;">Medicine List</h5>
-    <div class="table-responsive">
-    <table class="table table-primary">
-      <thead class="thead-dark">
-                    <tr>
-                      <th scope="col">Doctor Name</th>
-                      <th scope="col">Patient Name</th>
-                      <th scope="col">Patient ID</th>
-                      <th scope="col">Date</th>
-                      <th scope="col">Time</th>
-                      <th scope="col">Symptoms</th>
-                      <th scope="col">Medicine</th>
+    .header-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 48px;
+        height: 48px;
+        margin-right: 12px;
+        border-radius: 13px;
+        background: #ccfbf1;
+        color: #0f766e;
+        font-size: 21px;
+        vertical-align: middle;
+    }
 
-                    </tr>
-                  </thead>
-                  <tbody>
-  
-              <tbody>
-              {% for i in products %}
-              <tr>
-                <td  scope="col">{{i.Doctor1}}</td>
-                <td  scope="col">{{i.Patient1}}</td>
-                <td  scope="col">{{i.Patientno}}</td>
-                <td  scope="col">{{i.date1}}</td>
-                <td  scope="col">{{i.time1}}</td>
-                <td  scope="col">{{i.Symptoms}}</td>
-                <td  scope="col">{{i.medicine}}</td>
-                </tr>
-                 {% endfor %}
-              </tbody>
-          </table>
-  {%else%}
-  <h3 style="text-align:center; color:#f8f8f8;">No Search Found</h3>
-  <br><br><br><br><br>
-  {%endif%}
-  <br><br><br><br><br><br><br><br><br><br><br><br>
-{% endblock  %}
+    .section-card {
+        margin-bottom: 24px;
+        overflow: hidden;
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        box-shadow: 0 5px 20px rgba(15, 23, 42, .05);
+    }
+
+    .search-card {
+        padding: 24px;
+    }
+
+    .search-card h5 {
+        margin-bottom: 7px;
+        color: #0f172a;
+        font-size: 17px;
+        font-weight: 700;
+    }
+
+    .search-card p {
+        margin-bottom: 18px;
+        color: #64748b;
+        font-size: 13px;
+    }
+
+    .diagnosis-search-form {
+        display: flex;
+        gap: 10px;
+        max-width: 650px;
+    }
+
+    .diagnosis-search-form .form-control {
+        min-width: 0;
+        height: 44px;
+        border: 1px solid #cbd5e1;
+        border-radius: 9px;
+        box-shadow: none;
+    }
+
+    .diagnosis-search-form .form-control:focus {
+        border-color: #14b8a6;
+        box-shadow: 0 0 0 3px rgba(20, 184, 166, .12);
+    }
+
+    .btn-search {
+        height: 44px;
+        padding: 0 20px;
+        border: none;
+        border-radius: 9px;
+        background: #0f766e;
+        color: #fff;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .btn-search:hover {
+        background: #115e59;
+        color: #fff;
+    }
+
+    .results-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 22px 24px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .results-header h4 {
+        margin: 0;
+        color: #0f172a;
+        font-size: 19px;
+        font-weight: 700;
+    }
+
+    .results-header p {
+        margin: 5px 0 0;
+        color: #64748b;
+        font-size: 12px;
+    }
+
+    .result-count {
+        padding: 8px 12px;
+        border-radius: 8px;
+        background: #ccfbf1;
+        color: #0f766e;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .table-filter-wrap {
+        padding: 16px 24px 0;
+    }
+
+    .table-filter {
+        width: 100%;
+        max-width: 340px;
+        height: 40px;
+        padding: 8px 12px;
+        border: 1px solid #cbd5e1;
+        border-radius: 9px;
+        outline: none;
+    }
+
+    .table-filter:focus {
+        border-color: #14b8a6;
+    }
+
+    .diagnosis-table {
+        min-width: 850px;
+        margin: 0;
+    }
+
+    .diagnosis-table thead th {
+        padding: 15px 14px;
+        border: none;
+        background: #0f172a;
+        color: #fff;
+        font-size: 12px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .diagnosis-table tbody td {
+        padding: 15px 14px;
+        border-color: #e2e8f0;
+        color: #475569;
+        font-size: 13px;
+        vertical-align: middle;
+    }
+
+    .diagnosis-table tbody tr:hover {
+        background: #f8fafc;
+    }
+
+    .patient-name {
+        color: #0f172a;
+        font-weight: 700;
+    }
+
+    .patient-id {
+        display: inline-block;
+        padding: 5px 8px;
+        border-radius: 6px;
+        background: #eff6ff;
+        color: #1d4ed8;
+        font-weight: 600;
+    }
+
+    .medicine-text {
+        color: #0f766e;
+        font-weight: 600;
+        overflow-wrap: anywhere;
+    }
+
+    .empty-state {
+        padding: 45px 20px !important;
+        text-align: center;
+    }
+
+    .empty-state i {
+        display: block;
+        margin-bottom: 12px;
+        color: #94a3b8;
+        font-size: 36px;
+    }
+
+    .empty-state strong {
+        display: block;
+        margin-bottom: 6px;
+        color: #334155;
+        font-size: 15px;
+    }
+
+    .empty-state span {
+        color: #64748b;
+        font-size: 12px;
+    }
+
+    .no-search-card {
+        padding: 45px 20px;
+        text-align: center;
+    }
+
+    .no-search-card i {
+        margin-bottom: 15px;
+        color: #94a3b8;
+        font-size: 42px;
+    }
+
+    .no-search-card h5 {
+        color: #334155;
+        font-weight: 700;
+    }
+
+    .no-search-card p {
+        margin-bottom: 0;
+        color: #64748b;
+        font-size: 13px;
+    }
+
+    @media (max-width: 767px) {
+        .past-diagnosis-page {
+            padding: 18px 12px;
+        }
+
+        .diagnosis-header h2 {
+            font-size: 22px;
+        }
+
+        .search-card {
+            padding: 18px;
+        }
+
+        .results-header {
+            padding: 18px;
+        }
+
+        .table-filter-wrap {
+            padding: 15px 18px 0;
+        }
+    }
+
+    @media (max-width: 450px) {
+        .diagnosis-search-form {
+            flex-direction: column;
+        }
+
+        .diagnosis-search-form .btn-search {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="past-diagnosis-page">
+
+    <!-- Page heading -->
+    <div class="diagnosis-header">
+        <div>
+            <h2>
+                <span class="header-icon">
+                    <i class="fas fa-history"></i>
+                </span>
+                Past Diagnosis
+            </h2>
+            <p>Search and review previously recorded patient diagnoses.</p>
+        </div>
+    </div>
+
+    <!-- Search form -->
+    <div class="section-card search-card">
+        <h5>
+            <i class="fas fa-search mr-2"></i>
+            Search Patient Records
+        </h5>
+
+        <p>Enter a patient ID or another supported search term to find diagnosis history.</p>
+
+        <form class="diagnosis-search-form"
+              action="{% url 'search_view2' %}"
+              method="get">
+
+            <input
+                type="search"
+                class="form-control"
+                name="query"
+                value="{{ query|default:'' }}"
+                placeholder="Enter patient ID..."
+                aria-label="Search past diagnosis"
+                required>
+
+            <button class="btn btn-search" type="submit">
+                <i class="fas fa-search mr-1"></i>
+                Search
+            </button>
+        </form>
+    </div>
+
+    {% if products %}
+
+        <!-- Search results -->
+        <div class="section-card">
+
+            <div class="results-header">
+                <div>
+                    <h4>
+                        <i class="fas fa-notes-medical mr-2"></i>
+                        Medicine & Diagnosis History
+                    </h4>
+                    <p>{{ word|default:"Search results" }}</p>
+                </div>
+
+                <span class="result-count">
+                    {{ products|length }} Record{{ products|length|pluralize }}
+                </span>
+            </div>
+
+            <div class="table-filter-wrap">
+                <input
+                    type="search"
+                    id="diagnosisTableSearch"
+                    class="table-filter"
+                    placeholder="Filter displayed results..."
+                    aria-label="Filter diagnosis results">
+            </div>
+
+            <div class="table-responsive mt-3">
+                <table class="table diagnosis-table">
+                    <thead>
+                        <tr>
+                            <th>Doctor Name</th>
+                            <th>Patient Name</th>
+                            <th>Patient ID</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Symptoms</th>
+                            <th>Medicine</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="diagnosisTableBody">
+
+                        {% for i in products %}
+                        <tr class="diagnosis-row">
+                            <td>{{ i.Doctor1|default:"—" }}</td>
+
+                            <td>
+                                <span class="patient-name">
+                                    {{ i.Patient1|default:"—" }}
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="patient-id">
+                                    {{ i.Patientno|default:"—" }}
+                                </span>
+                            </td>
+
+                            <td>{{ i.date1|default:"—" }}</td>
+                            <td>{{ i.time1|default:"—" }}</td>
+                            <td>{{ i.Symptoms|default:"—" }}</td>
+
+                            <td>
+                                <span class="medicine-text">
+                                    {{ i.medicine|default:"—" }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                        <tr id="noFilterResults" style="display: none;">
+                            <td colspan="7" class="empty-state">
+                                <i class="fas fa-search"></i>
+                                <strong>No matching records</strong>
+                                <span>Try another search term.</span>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    {% else %}
+
+        <!-- No results state -->
+        <div class="section-card no-search-card">
+            <i class="fas fa-folder-open d-block"></i>
+            <h5>No diagnosis records found</h5>
+            <p>
+                {% if query %}
+                    No records matched your search. Try another patient ID or search term.
+                {% else %}
+                    Enter a search term above to find past diagnosis records.
+                {% endif %}
+            </p>
+        </div>
+
+    {% endif %}
+
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('diagnosisTableSearch');
+        const rows = document.querySelectorAll('.diagnosis-row');
+        const noResults = document.getElementById('noFilterResults');
+
+        if (!searchInput) {
+            return;
+        }
+
+        searchInput.addEventListener('input', function () {
+            const query = this.value.trim().toLowerCase();
+            let visibleCount = 0;
+
+            rows.forEach(function (row) {
+                const matches = row.textContent.toLowerCase().includes(query);
+
+                row.style.display = matches ? '' : 'none';
+
+                if (matches) {
+                    visibleCount++;
+                }
+            });
+
+            if (noResults) {
+                noResults.style.display =
+                    visibleCount === 0 ? '' : 'none';
+            }
+        });
+    });
+</script>
+
+{% endblock content %}

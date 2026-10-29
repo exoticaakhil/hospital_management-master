@@ -1,60 +1,520 @@
+
 {% extends 'nav1.html' %}
 {% load static %}
+
 {% block content %}
 
-  
-  
-    <style media="screen">
-      a:link {
-        text-decoration: none;
-      }
+<style>
+    .appointments-page {
+        padding: 10px 0 30px;
+    }
 
-    </style>
-    <style>
-body{
-  
-  background: -webkit-linear-gradient(to right, #383737, #373737);  
-  background: linear-gradient(to bottom, #383737, #373737); 
-  }
-    </style>
-<br><br><br><br><br><br>
-  <h5 style="text-align: center; color:white;">View Appoiments</h5>
-  <div class="table-responsive">
-  <table class="table table-primary"> 
-    <thead class="thead-dark">
-                      <tr>
-                        <tr>
-                          <th scope="col">Doctor Name</th>
-                          <th scope="col">Department</th>
-                          <th scope="col">Patient Name</th>
-                          <th scope="col">Patient ID</th>
-                          <th scope="col">Date</th>
-                          <th scope="col">Time</th>
-                          <th scope="col">token</th>
-                          <th scope="col">Symptoms</th>
-                          <th scope="col">Action</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                
-                      <tbody>
-                            {% for i in appointment %}
-                      <tr>
-                        <td>{{i.doctor}}</td>
-                        <td>{{i.deparment}}</td>
-                        <td>{{i.patient1}}</td>
-                        <td>{{i.patientno}}</td>
-                        <td>{{i.date1}}</td>
-                        <td>{{i.time1}}</td>
-                        <td>{{i.token}}</td>
-                        <td>{{i.Symptoms}}</td>
+    .appointments-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-bottom: 25px;
+    }
+
+    .appointments-title {
+        color: #172b4d;
+        font-size: 27px;
+        font-weight: 700;
+        margin: 0 0 6px;
+    }
+
+    .appointments-subtitle {
+        color: #718096;
+        font-size: 14px;
+        margin: 0;
+    }
+
+    .appointment-count {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        padding: 12px 16px;
+        background: #e6fffb;
+        color: #087f74;
+        border-radius: 12px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .appointment-count i {
+        font-size: 18px;
+    }
+
+    .appointment-card {
+        background: #fff;
+        border: 1px solid #e7edf4;
+        border-radius: 16px;
+        box-shadow: 0 5px 22px rgba(15, 23, 42, 0.045);
+        overflow: hidden;
+    }
+
+    .appointment-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        padding: 20px 22px;
+        border-bottom: 1px solid #edf1f6;
+    }
+
+    .appointment-card-header h5 {
+        margin: 0;
+        color: #24344d;
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    .appointment-search {
+        position: relative;
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .appointment-search i {
+        position: absolute;
+        left: 13px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+    }
+
+    .appointment-search input {
+        width: 100%;
+        border: 1px solid #dce4ed;
+        background: #f8fafc;
+        border-radius: 9px;
+        padding: 10px 12px 10px 36px;
+        outline: none;
+        font-size: 13px;
+        color: #24344d;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .appointment-search input:focus {
+        border-color: #0d9488;
+        box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1);
+        background: #fff;
+    }
+
+    .appointment-table-wrap {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .appointment-table {
+        width: 100%;
+        min-width: 1050px;
+        margin: 0;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .appointment-table thead th {
+        background: #f5f8fc;
+        color: #64748b;
+        border: none;
+        border-bottom: 1px solid #e7edf4;
+        padding: 15px 16px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+    }
+
+    .appointment-table tbody td {
+        padding: 16px;
+        vertical-align: middle;
+        border-top: 1px solid #edf1f6;
+        color: #475569;
+        font-size: 13px;
+    }
+
+    .appointment-table tbody tr:first-child td {
+        border-top: none;
+    }
+
+    .appointment-table tbody tr:hover {
+        background: #f8fbff;
+    }
+
+    .doctor-name {
+        color: #24344d;
+        font-weight: 600;
+    }
+
+    .department-badge {
+        display: inline-block;
+        padding: 6px 10px;
+        border-radius: 7px;
+        background: #eff6ff;
+        color: #315c9b;
+        font-size: 11px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .patient-name {
+        color: #334155;
+        font-weight: 600;
+    }
+
+    .patient-id {
+        display: inline-block;
+        padding: 5px 9px;
+        background: #f1f5f9;
+        color: #475569;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .appointment-date {
+        white-space: nowrap;
+        color: #475569;
+    }
+
+    .appointment-time {
+        display: inline-block;
+        white-space: nowrap;
+        padding: 6px 9px;
+        background: #f0fdfa;
+        color: #0f766e;
+        border-radius: 7px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .token-badge {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        min-width: 32px;
+        padding: 6px 9px;
+        border-radius: 7px;
+        background: #fff7ed;
+        color: #c2410c;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .symptoms-text {
+        min-width: 130px;
+        max-width: 230px;
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+
+    .delete-appointment-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        border: none;
+        border-radius: 8px;
+        background: #fff1f2;
+        color: #be123c;
+        padding: 9px 12px;
+        font-size: 12px;
+        font-weight: 600;
+        text-decoration: none !important;
+        white-space: nowrap;
+        transition: background 0.2s, color 0.2s;
+    }
+
+    .delete-appointment-btn:hover {
+        background: #be123c;
+        color: #fff;
+    }
+
+    .no-results {
+        display: none;
+        padding: 35px 15px;
+        color: #718096;
+        text-align: center;
+        font-size: 14px;
+    }
+
+    .no-results i {
+        display: block;
+        margin-bottom: 12px;
+        font-size: 30px;
+        color: #94a3b8;
+    }
+
+    .empty-state {
+        padding: 55px 20px;
+        text-align: center;
+    }
+
+    .empty-state-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 75px;
+        height: 75px;
+        border-radius: 22px;
+        background: #e6fffb;
+        color: #0d9488;
+        font-size: 29px;
+        margin-bottom: 18px;
+    }
+
+    .empty-state h5 {
+        color: #24344d;
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .empty-state p {
+        color: #718096;
+        font-size: 13px;
+        margin: 0;
+    }
+
+    .table-footer {
+        padding: 14px 22px;
+        border-top: 1px solid #edf1f6;
+        color: #718096;
+        font-size: 12px;
+    }
+
+    @media (max-width: 767.98px) {
+        .appointments-page {
+            padding-top: 5px;
+        }
+
+        .appointments-title {
+            font-size: 23px;
+        }
+
+        .appointments-header {
+            align-items: flex-start;
+        }
+
+        .appointment-count {
+            padding: 10px 12px;
+        }
+
+        .appointment-card-header {
+            padding: 17px;
+        }
+
+        .appointment-search {
+            max-width: 100%;
+        }
+
+        .table-footer {
+            padding: 13px 17px;
+        }
+    }
+</style>
+
+<div class="appointments-page">
+
+    <!-- Page Header -->
+    <div class="appointments-header">
+        <div>
+            <h2 class="appointments-title">
+                <i class="fas fa-calendar-check mr-2"
+                   style="color:#0d9488;"></i>
+                My Appointments
+            </h2>
+            <p class="appointments-subtitle">
+                View and manage your hospital appointment records.
+            </p>
+        </div>
+
+        <div class="appointment-count">
+            <i class="fas fa-calendar-alt"></i>
+            <span>
+                Total Appointments:
+                <strong id="appointmentCount">
+                    {{ appointment|length }}
+                </strong>
+            </span>
+        </div>
+    </div>
+
+    <!-- Appointments Card -->
+    <div class="appointment-card">
+
+        <div class="appointment-card-header">
+            <h5>
+                <i class="fas fa-list-ul mr-2"
+                   style="color:#0d9488;"></i>
+                Appointment History
+            </h5>
+
+            {% if appointment %}
+            <div class="appointment-search">
+                <i class="fas fa-search"></i>
+                <input type="text"
+                       id="appointmentSearch"
+                       placeholder="Search appointments..."
+                       aria-label="Search appointments">
+            </div>
+            {% endif %}
+        </div>
+
+        {% if appointment %}
+
+        <div class="appointment-table-wrap">
+            <table class="table appointment-table" id="appointmentsTable">
+                <thead>
+                    <tr>
+                        <th>Doctor Name</th>
+                        <th>Department</th>
+                        <th>Patient Name</th>
+                        <th>Patient ID</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Token</th>
+                        <th>Symptoms</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody id="appointmentTableBody">
+                    {% for i in appointment %}
+                    <tr class="appointment-row">
+                        <td>
+                            <span class="doctor-name">
+                                <i class="fas fa-user-md mr-1"
+                                   style="color:#0d9488;"></i>
+                                {{ i.doctor }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="department-badge">
+                                {{ i.deparment }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="patient-name">
+                                {{ i.patient1 }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="patient-id">
+                                {{ i.patientno }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="appointment-date">
+                                <i class="far fa-calendar-alt mr-1"></i>
+                                {{ i.date1|date:"d M Y" }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="appointment-time">
+                                <i class="far fa-clock mr-1"></i>
+                                {{ i.time1 }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="token-badge">
+                                {{ i.token }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <div class="symptoms-text">
+                                {{ i.Symptoms|default:"Not specified" }}
+                            </div>
+                        </td>
+
                         <td><a href="{% url 'delete2' i.id %}" onclick="return confirm('Are you ready to delete this record ?')" class="btn btn-danger">Delete</a></td>
                     </tr>
                     {% endfor %}
-                    </tbody>
-		</table>
-	 </div>
-	
-  	<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="no-results" id="noSearchResults">
+            <i class="fas fa-search"></i>
+            No appointments match your search.
+        </div>
+
+        <div class="table-footer">
+            <i class="fas fa-info-circle mr-1"></i>
+            Scroll horizontally to view all appointment details.
+        </div>
+
+        {% else %}
+
+        <!-- Empty State -->
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="far fa-calendar-times"></i>
+            </div>
+
+            <h5>No Appointments Found</h5>
+
+            <p>
+                There are currently no appointment records to display.
+            </p>
+        </div>
+
+        {% endif %}
+
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('appointmentSearch');
+        const tableBody = document.getElementById('appointmentTableBody');
+        const noResults = document.getElementById('noSearchResults');
+        const countElement = document.getElementById('appointmentCount');
+
+        if (!searchInput || !tableBody) {
+            return;
+        }
+
+        const rows = Array.from(
+            tableBody.querySelectorAll('.appointment-row')
+        );
+
+        searchInput.addEventListener('input', function () {
+            const query = this.value.trim().toLowerCase();
+            let visibleCount = 0;
+
+            rows.forEach(function (row) {
+                const matches = row.textContent.toLowerCase().includes(query);
+
+                row.style.display = matches ? '' : 'none';
+
+                if (matches) {
+                    visibleCount++;
+                }
+            });
+
+            if (noResults) {
+                noResults.style.display =
+                    visibleCount === 0 ? 'block' : 'none';
+            }
+
+            if (countElement) {
+                countElement.textContent = visibleCount;
+            }
+        });
+    });
+</script>
 
 {% endblock content %}

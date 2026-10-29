@@ -149,19 +149,33 @@ def pharlogin(request):
         return render(request,'phrlogin.html',d)
 
 def search_view(request):
-    # whatever user write in search box we get in query
-    query = request.GET['query']
-    products=Appointment1.objects.all().filter(patientno__icontains=query)
-    if 'patient_id' in request.COOKIES:
-        patient_id = request.COOKIES['patient_id']
+    # Get the search query safely
+    query = request.GET.get('query', '').strip()
 
+    # Start with all appointments
+    products = Appointment1.objects.all()
 
-    # word variable will be shown in html when user click on search button
-    word="Searched Result :"
+    # Filter by patient number only when a query is entered
+    if query:
+        products = products.filter(patientno__icontains=query)
+
+    # Existing cookie handling
+    patient_id = request.COOKIES.get('patient_id')
+
+    word = "Searched Result :"
 
     if request.user.is_authenticated:
-        return render(request,'searchappoiment.html',{'products':products,'word':word,})
-    return render(request,'admin_home.html')
+        return render(
+            request,
+            'searchappoiment.html',
+            {
+                'products': products,
+                'word': word,
+                'query': query,
+            }
+        )
+
+    return render(request, 'admin_home.html')
 def update_password1(request):
     if request.method == 'POST':
         current_password = request.POST.get('current_password')
@@ -232,13 +246,25 @@ def delete2(request,pk):
     pro.delete()
     return redirect('doctorlogin')
 def patient_dashboard_view(request):
+    # Get the patient profile linked to the logged-in user
+    patient = Patient.objects.filter(user=request.user).first()
 
-    user=request.user.id
-    patient1 = Patient.objects.get(user_id=user)
-    d=Patient.objects.get(user_id=user)
-    appointment = Appointment.objects.filter(patient1_id=d.id)
-    d = {'appointment':appointment,'patient':patient1}
-    return render(request,'patient_dashboard_view.html',d)
+    if patient is None:
+        messages.error(
+            request,
+            "No patient profile is linked to this account. Please contact the administrator."
+        )
+        return redirect('login')
+
+    # Get appointments for this patient
+    appointment = Appointment.objects.filter(patient1_id=patient.id)
+
+    context = {
+        'appointment': appointment,
+        'patient': patient,
+    }
+
+    return render(request, 'patient_dashboard_view.html', context)
 def doctor_dashboard_view(request):
     user=request.user.id
     Doctor1=Doctor.objects.get(user_id=user)
@@ -271,7 +297,7 @@ def Index(request):
     return render(request,'index.html')
 def signupp(request):
     b=Depatment.objects.all()
-    return render(request,'patient_signup.html',{'b':b})
+    return render(request,'Doctor_signup.html',{'b':b})
 def approve(request,pk):
     error=""
     pro = Patient1.objects.get(id=pk)
@@ -315,7 +341,7 @@ def patient_signup(request):
             error = "no"
         except:
             error = "yes"
-    return render(request,'patient_signup.html', locals())
+    return render(request,'Doctor_signup.html', locals())
 
 def contact(request):
     error = ""
@@ -333,38 +359,51 @@ def contact(request):
     return render(request, 'contact.html', locals())
 
 def adminlogin(request):
-
     if request.method == 'POST':
-        u = request.POST['uname']
-        p = request.POST['pwd']
-        user = authenticate(username=u, password=p)
-        don1=Doctor.objects.filter(user=user)
-        pat1=Patient.objects.filter(user=user)
-        pha1=Pharmacy1.objects.filter(user=user)
+        u = request.POST.get('uname', '').strip()
+        p = request.POST.get('pwd', '')
+
+        user = authenticate(request, username=u, password=p)
+
         if user is not None:
+            don1 = Doctor.objects.filter(user=user).first()
+            pat1 = Patient.objects.filter(user=user).first()
+            pha1 = Pharmacy1.objects.filter(user=user).first()
+
             if don1:
-                login(request,user)
-                Doctor1 = Doctor.objects.get(user_id=user)
-                appointment = Appointment.objects.filter(doctor_id=Doctor1.id)
-                return render(request,'doctorlogin.html',{'doctor':Doctor1,'appointment':appointment})
+                login(request, user)
+                appointment = Appointment.objects.filter(doctor_id=don1.id)
+
+                return render(request, 'doctorlogin.html', {
+                    'doctor': don1,
+                    'appointment': appointment
+                })
+
             elif pat1:
-                login(request,user)
-                patient1 = Patient.objects.get(user_id=user)
+                login(request, user)
                 doc = Doctor.objects.all()
                 av = Depatment.objects.all()
-                return render(request,'patlogin.html',{'patient':patient1,'doc':doc,'av':av})
-            elif pha1:
-                login(request,user)
-                return redirect('pharlogin')
-            else :
-                login(request,user)
-                return redirect('admin_home')
-        else:
-            login(request,user)
-            return render(request,'login.html')
-    else:
 
-       return render(request,'login.html')
+                return render(request, 'patlogin.html', {
+                    'patient': pat1,
+                    'doc': doc,
+                    'av': av
+                })
+
+            elif pha1:
+                login(request, user)
+                return redirect('pharlogin')
+
+            else:
+                login(request, user)
+                return redirect('admin_home')
+
+        else:
+            return render(request, 'login.html', {
+                'error': 'Invalid username or password!'
+            })
+
+    return render(request, 'login.html')
 def pathome(request):
     user=request.user.id
     patient1 = Patient.objects.get(user_id=user)
@@ -411,7 +450,7 @@ def add_doctor(request):
             usr.user= use
             usr.save()
             subject='Your Approval has been successful'
-            message=f' sir, ur Doctor username ={usr.user.username}'' password={} '.format(pa)
+            message=f' sir, Your username ={usr.user.username}''and password={} '.format(pa)
             recipient=use.email
             send_mail(subject,message,settings.EMAIL_HOST_USER,[recipient])
         try:
@@ -495,7 +534,7 @@ def add_patient(request):
             usr.user= use
             usr.save()
             subject='Your Approval has been successful'
-            message=f' sir, ur  details \n Patient id=op{usr.id}\n' 'patient username={}\n password={} '.format(p,pa)
+            message=f' sir, your login  details \n Patient id=op{usr.id}\n' 'patient username={}\n password={} '.format(p,pa)
             recipient=use.email
             send_mail(subject,message,settings.EMAIL_HOST_USER,[recipient])
         try:

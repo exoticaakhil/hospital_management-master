@@ -1,52 +1,462 @@
+
 {% extends 'nav2.html' %}
 {% load static %}
 {% block content %}
+
 <style>
-	body{
- 
-    background: -webkit-linear-gradient(to right, #383737, #373737);  
-    background: linear-gradient(to bottom, #383737, #373737); 
+    .doctor-dashboard {
+        min-height: calc(100vh - 70px);
+        padding: 28px 22px 45px;
+        background: linear-gradient(135deg, #f0fdfa, #f1f5f9);
+        color: #1e293b;
     }
 
+    .doctor-dashboard-container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
 
-  </style>
+    .doctor-welcome {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
+        padding: 28px 32px;
+        margin-bottom: 26px;
+        border-radius: 18px;
+        background: linear-gradient(120deg, #0f766e, #0e7490);
+        color: #fff;
+        box-shadow: 0 10px 28px rgba(15, 118, 110, .18);
+    }
 
-  <br><br><br><br><br><br>
-  <center> <h3 style="color: #f4f0f0;">Welcome Dr.{{doctor.name}} </h3>  </center>
+    .doctor-welcome h2 {
+        font-size: 28px;
+        font-weight: 750;
+        margin: 0 0 8px;
+    }
 
-  <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
-    <div class="carousel-inner">
-      <div class="carousel-item active">
-        <img class="d-block w-100" src="https://www.waldenu.edu/media/5592/seo-2478-bs-nurse-in-hospital-13487168-1200x675" alt="Second slide" height="500">
-      </div>
-      <div class="carousel-item ">
-        <img class="d-block w-100" src="https://veeroesquotes.com/wp-content/uploads/2023/08/Quote_Doctor.jpg" alt="First slide" height="500">
-      </div>
-      <div class="carousel-item">
-        <img class="d-block w-100" src="https://tipsquoteswishes.com/wp-content/uploads/2022/09/I-am-Proud-To-Be-A-Doctor-Quotes.jpg" alt="Third slide" height="500">
-      </div>
+    .doctor-welcome p {
+        color: #ccfbf1;
+        font-size: 14px;
+        margin: 0;
+    }
+
+    .welcome-icon {
+        width: 70px;
+        height: 70px;
+        border-radius: 18px;
+        background: rgba(255,255,255,.15);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 32px;
+        flex-shrink: 0;
+    }
+
+    .doctor-carousel {
+        overflow: hidden;
+        border-radius: 18px;
+        margin-bottom: 32px;
+        background: #e2e8f0;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, .10);
+    }
+
+    .doctor-carousel .carousel-item img {
+        width: 100%;
+        height: 390px;
+        object-fit: cover;
+        display: block;
+    }
+
+    .doctor-carousel .carousel-caption {
+        left: 0;
+        right: 0;
+        bottom: 0;
+        padding: 45px 25px 25px;
+        text-align: left;
+        background: linear-gradient(transparent, rgba(15, 23, 42, .85));
+    }
+
+    .doctor-carousel .carousel-caption h4 {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 7px;
+    }
+
+    .doctor-carousel .carousel-caption p {
+        margin: 0;
+        font-size: 14px;
+    }
+
+    .dashboard-section-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin: 30px 0 20px;
+    }
+
+    .dashboard-section-heading h3 {
+        color: #134e4a;
+        font-size: 23px;
+        font-weight: 750;
+        margin: 0 0 6px;
+    }
+
+    .dashboard-section-heading p {
+        color: #64748b;
+        font-size: 14px;
+        margin: 0;
+    }
+
+    .appointment-count {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 9px 14px;
+        border-radius: 10px;
+        background: #ccfbf1;
+        color: #115e59;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .appointment-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 20px;
+    }
+
+    .appointment-card {
+        position: relative;
+        overflow: hidden;
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 15px;
+        box-shadow: 0 5px 18px rgba(15, 23, 42, .05);
+        transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .appointment-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 25px rgba(15, 23, 42, .10);
+    }
+
+    .appointment-card-top {
+        height: 5px;
+        background: linear-gradient(90deg, #0d9488, #38bdf8);
+    }
+
+    .appointment-card-body {
+        padding: 22px;
+    }
+
+    .patient-icon {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 13px;
+        background: #ccfbf1;
+        color: #0f766e;
+        font-size: 21px;
+        margin-bottom: 15px;
+    }
+
+    .patient-label {
+        color: #64748b;
+        font-size: 12px;
+        margin-bottom: 5px;
+    }
+
+    .patient-name {
+        color: #0f172a;
+        font-size: 18px;
+        font-weight: 750;
+        margin-bottom: 17px;
+        overflow-wrap: anywhere;
+    }
+
+    .patient-id-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 0;
+        border-top: 1px solid #f1f5f9;
+        border-bottom: 1px solid #f1f5f9;
+        font-size: 13px;
+    }
+
+    .patient-id-row span:first-child {
+        color: #64748b;
+    }
+
+    .patient-id {
+        padding: 5px 9px;
+        border-radius: 7px;
+        background: #eff6ff;
+        color: #1d4ed8;
+        font-weight: 700;
+        overflow-wrap: anywhere;
+    }
+
+    .symptoms-section {
+        padding-top: 16px;
+    }
+
+    .symptoms-section h6 {
+        font-size: 12px;
+        font-weight: 700;
+        color: #475569;
+        margin-bottom: 8px;
+    }
+
+    .symptoms-section p {
+        color: #64748b;
+        font-size: 13px;
+        line-height: 1.6;
+        margin: 0;
+        overflow-wrap: anywhere;
+    }
+
+    .appointment-empty {
+        grid-column: 1 / -1;
+        background: #fff;
+        border: 1px dashed #cbd5e1;
+        border-radius: 15px;
+        text-align: center;
+        padding: 45px 20px;
+    }
+
+    .appointment-empty i {
+        font-size: 38px;
+        color: #94a3b8;
+        margin-bottom: 15px;
+    }
+
+    .appointment-empty h5 {
+        color: #334155;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .appointment-empty p {
+        color: #64748b;
+        font-size: 14px;
+        margin: 0;
+    }
+
+    @media (max-width: 992px) {
+        .appointment-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .doctor-carousel .carousel-item img {
+            height: 320px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .doctor-dashboard {
+            padding: 18px 12px 30px;
+        }
+
+        .doctor-welcome {
+            padding: 22px;
+        }
+
+        .doctor-welcome h2 {
+            font-size: 23px;
+        }
+
+        .welcome-icon {
+            width: 55px;
+            height: 55px;
+            font-size: 25px;
+        }
+
+        .doctor-carousel .carousel-item img {
+            height: 230px;
+        }
+
+        .doctor-carousel .carousel-caption {
+            padding: 30px 15px 15px;
+        }
+
+        .doctor-carousel .carousel-caption h4 {
+            font-size: 18px;
+        }
+
+        .doctor-carousel .carousel-caption p {
+            font-size: 12px;
+        }
+
+        .dashboard-section-heading h3 {
+            font-size: 21px;
+        }
+
+        .appointment-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .appointment-card-body {
+            padding: 19px;
+        }
+    }
+</style>
+
+<div class="doctor-dashboard">
+    <div class="doctor-dashboard-container">
+
+        <!-- Welcome Banner -->
+        <div class="doctor-welcome">
+            <div>
+                <h2>
+                    Welcome, Dr. {{ doctor.name }}
+                </h2>
+                <p>
+                    <i class="fas fa-heartbeat mr-1"></i>
+                    Your medical dashboard and patient appointments
+                </p>
+            </div>
+
+            <div class="welcome-icon">
+                <i class="fas fa-user-md"></i>
+            </div>
+        </div>
+
+        <!-- Hospital Carousel -->
+        <div id="doctorCarousel"
+             class="carousel slide doctor-carousel"
+             data-ride="carousel"
+             data-interval="5000">
+
+            <ol class="carousel-indicators">
+                <li data-target="#doctorCarousel"
+                    data-slide-to="0"
+                    class="active"></li>
+                <li data-target="#doctorCarousel"
+                    data-slide-to="1"></li>
+                <li data-target="#doctorCarousel"
+                    data-slide-to="2"></li>
+            </ol>
+
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img
+                        src="https://www.waldenu.edu/media/5592/seo-2478-bs-nurse-in-hospital-13487168-1200x675"
+                        alt="Healthcare professionals in a hospital">
+
+                    <div class="carousel-caption">
+                        <h4>Quality Healthcare, Every Day</h4>
+                        <p>Providing compassionate care for every patient.</p>
+                    </div>
+                </div>
+
+                <div class="carousel-item">
+                    <img
+                        src="https://veeroesquotes.com/wp-content/uploads/2023/08/Quote_Doctor.jpg"
+                        alt="Doctor inspiration">
+
+                    <div class="carousel-caption">
+                        <h4>Care with Compassion</h4>
+                        <p>Every patient deserves attention and understanding.</p>
+                    </div>
+                </div>
+
+                <div class="carousel-item">
+                    <img
+                        src="https://tipsquoteswishes.com/wp-content/uploads/2022/09/I-am-Proud-To-Be-A-Doctor-Quotes.jpg"
+                        alt="Doctor appreciation">
+
+                    <div class="carousel-caption">
+                        <h4>Dedicated to Healing</h4>
+                        <p>Your commitment makes a difference in people's lives.</p>
+                    </div>
+                </div>
+            </div>
+
+            <a class="carousel-control-prev"
+               href="#doctorCarousel"
+               role="button"
+               data-slide="prev"
+               aria-label="Previous slide">
+                <span class="carousel-control-prev-icon"
+                      aria-hidden="true"></span>
+            </a>
+
+            <a class="carousel-control-next"
+               href="#doctorCarousel"
+               role="button"
+               data-slide="next"
+               aria-label="Next slide">
+                <span class="carousel-control-next-icon"
+                      aria-hidden="true"></span>
+            </a>
+        </div>
+
+        <!-- Appointments -->
+        <div class="dashboard-section-heading">
+            <div>
+                <h3>
+                    <i class="fas fa-calendar-check mr-2"></i>
+                    My Appointments
+                </h3>
+                <p>Review the patients assigned to you.</p>
+            </div>
+
+            <span class="appointment-count">
+                <i class="fas fa-users"></i>
+                {{ appointment|length }} appointment{{ appointment|length|pluralize }}
+            </span>
+        </div>
+
+        <div class="appointment-grid">
+            {% for i in appointment %}
+            <div class="appointment-card">
+                <div class="appointment-card-top"></div>
+
+                <div class="appointment-card-body">
+                    <div class="patient-icon">
+                        <i class="fas fa-user-injured"></i>
+                    </div>
+
+                    <div class="patient-label">Patient Name</div>
+                    <div class="patient-name">
+                        {{ i.patient1.name|default:"Patient name unavailable" }}
+                    </div>
+
+                    <div class="patient-id-row">
+                        <span>Patient ID</span>
+                        <span class="patient-id">{{ i.patientno }}</span>
+                    </div>
+
+                    <div class="symptoms-section">
+                        <h6>
+                            <i class="fas fa-notes-medical mr-1"></i>
+                            Reported Symptoms
+                        </h6>
+                        <p>
+                            {{ i.Symptoms|default:"No symptoms provided." }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            {% empty %}
+            <div class="appointment-empty">
+                <i class="fas fa-calendar-times"></i>
+                <h5>No Appointments Available</h5>
+                <p>You currently have no appointments assigned.</p>
+            </div>
+            {% endfor %}
+        </div>
+
     </div>
-    <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-      <span class="sr-only">Previous</span>
-    </a>
-    <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
-      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-      <span class="sr-only">Next</span>
-    </a>
-  </div>
-<br>
-<center> <h3 style="color: #f4f0f0;"> Dr.{{doctor.name}} This is Ur Appoiments </h3>  </center>
-<div class="card-deck"> <br>
-  {% for i in appointment %}
-  <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
-    <div class="card-header" style="text-align: center;font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;">Patient Name:-{{i.patient1.name}}</div>
-    <div class="card-body">
-      <h5 class="card-text" style="text-align: center;">Patient id:-{{i.patientno}}</h5>
-      <p class="card-text">Symptoms:-{{i.Symptoms}}</p>
-    </div>
-  </div>
-  {% endfor %}
 </div>
-<br>
+
 {% endblock content %}

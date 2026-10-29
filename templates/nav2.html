@@ -1,181 +1,601 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  {% load static %}
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <title>Hospital Administration</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://kit.fontawesome.com/30ecc6e708.js" crossorigin="anonymous"></script>
-  <style>
-    /* Optional: Add custom styles for your navbar */
-   
-    .footer {
-            background-color: #f8f9fa;
-          
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Hospital Administration</title>
+
+    <!-- Bootstrap 4.6 CSS -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <style>
+        :root {
+            --sidebar-width: 250px;
+            --sidebar-bg: #0f172a;
+            --sidebar-hover: #1e293b;
+            --accent: #14b8a6;
+            --page-bg: #f1f5f9;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            min-height: 100%;
+            margin: 0;
+        }
+
+        body {
+            background: var(--page-bg);
+            font-family: Arial, Helvetica, sans-serif;
+            color: #1e293b;
+        }
+
+        /* Sidebar */
+        .doctor-sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
             bottom: 0;
-            width: 100%;
-        }
-        #vbar li{
-          display: flex; justify-content: space-between;
-        }
-        .social-icons {
-            list-style: none;
-            padding: 0;
-        }
-
-        .social-icons li {
-    
-            margin-right: 10px;
+            width: var(--sidebar-width);
+            background: var(--sidebar-bg);
+            color: #fff;
+            z-index: 1050;
+            overflow-y: auto;
+            transition: transform .3s ease;
+            box-shadow: 4px 0 20px rgba(15, 23, 42, .08);
         }
 
-        .social-icons a {
-            color: #007bff;
-            text-decoration: none;
-            font-size: 20px;
-        }
-        #ah:hover{
-            background-color: #261f1f;
-            width: 100%;
+        .sidebar-brand {
+            padding: 25px 20px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, .1);
         }
 
-        footer {
-            
-            background-color: #040404;
-            
-          }
-  
-  
-          #ftr {
-  
-            padding: 20px;
-          }
-  
-          .fa {
-  
+        .brand-icon {
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 13px;
+            background: rgba(20, 184, 166, .15);
+            color: #5eead4;
             font-size: 23px;
-            width: 60px;
-            text-align: center;
-            text-decoration: none;
-            margin: 5px 2px;
+            margin-bottom: 13px;
+        }
+
+        .sidebar-brand h5 {
+            font-size: 15px;
+            line-height: 1.5;
+            font-weight: 700;
+            margin: 0 0 12px;
+            color: #fff;
+        }
+
+        .doctor-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 13px;
+            background: rgba(255, 255, 255, .06);
+            border-radius: 11px;
+        }
+
+        .doctor-profile-icon {
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
-          }
-  
-          .fa:hover {
-            opacity: 0.5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #134e4a;
+            color: #99f6e4;
+            flex-shrink: 0;
+        }
+
+        .doctor-profile small {
+            display: block;
+            color: #94a3b8;
+            font-size: 11px;
+            margin-bottom: 3px;
+        }
+
+        .doctor-profile strong {
+            display: block;
+            color: #f8fafc;
+            font-size: 13px;
+            overflow-wrap: anywhere;
+        }
+
+        .sidebar-section-label {
+            padding: 22px 20px 9px;
+            color: #64748b;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+        }
+
+        .doctor-nav {
+            padding: 0 12px 20px;
+            list-style: none;
+            margin: 0;
+        }
+
+        .doctor-nav .nav-item {
+            margin-bottom: 5px;
+        }
+
+        .doctor-nav .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            border-radius: 9px;
+            color: #cbd5e1;
+            font-size: 13px;
             text-decoration: none;
-          }
-  
-          .fa-facebook {
-            background: #3B5998;
-            color: white;
-            margin-top: 30px;
-          }
-  
-          .fa-whatsapp {
-            background: #25d366;
-            color: white;
-          }
-  
-          .fa-twitter {
-            background: #55ACEE;
-            color: white;
-          }
-  
-          .fa-instagram {
-            background: #125688;
-            color: white;
-          }
-  
-          p {
+            transition: background .2s, color .2s;
+            cursor: pointer;
+        }
+
+        .doctor-nav .nav-link > i:first-child {
+            width: 19px;
             text-align: center;
-  
-          }
+            font-size: 15px;
+            flex-shrink: 0;
+        }
 
-  </style>
+        .doctor-nav .nav-link:hover,
+        .doctor-nav .nav-link:focus {
+            background: var(--sidebar-hover);
+            color: #fff;
+        }
+
+        .doctor-nav .nav-link.active {
+            background: #134e4a;
+            color: #99f6e4;
+            font-weight: 700;
+        }
+
+        /* Dropdown arrows */
+        .doctor-nav .menu-arrow {
+            margin-left: auto;
+            width: auto !important;
+            font-size: 11px !important;
+            transition: transform .25s ease;
+        }
+
+        .doctor-nav a[aria-expanded="true"] .menu-arrow {
+            transform: rotate(180deg);
+        }
+
+        /* Dropdown submenu */
+        .doctor-nav .submenu {
+            padding: 4px 0 5px 12px;
+        }
+
+        .doctor-nav .submenu .nav-link {
+            padding: 11px 10px;
+            font-size: 12px;
+            color: #cbd5e1;
+        }
+
+        .doctor-nav .submenu .nav-link > i:first-child {
+            font-size: 13px;
+        }
+
+        .doctor-nav .submenu .nav-link:hover {
+            background: #1e293b;
+            color: #5eead4;
+        }
+
+        .sidebar-bottom {
+            padding: 15px 12px 20px;
+            border-top: 1px solid rgba(255, 255, 255, .08);
+        }
+
+        .doctor-nav .logout-link {
+            color: #fca5a5;
+        }
+
+        .doctor-nav .logout-link:hover {
+            background: rgba(239, 68, 68, .12);
+            color: #fecaca;
+        }
+
+        /* Main content */
+        .doctor-main {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: margin-left .3s ease;
+        }
+
+        .doctor-topbar {
+            min-height: 64px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 25px;
+            background: #fff;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .doctor-topbar-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #334155;
+            margin: 0;
+        }
+
+        .doctor-topbar-subtitle {
+            margin-left: auto;
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .sidebar-toggle {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border: 0;
+            border-radius: 9px;
+            background: #f1f5f9;
+            color: #0f172a;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .doctor-content {
+            flex: 1;
+            min-width: 0;
+            width: 100%;
+        }
+
+        /* Footer */
+        .doctor-footer {
+            margin-top: auto;
+            padding: 20px 15px;
+            text-align: center;
+            background: #fff;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .doctor-footer p {
+            margin: 0;
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        .footer-social {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .footer-social a {
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            background: #f1f5f9;
+            color: #475569;
+            text-decoration: none;
+            transition: all .2s;
+        }
+
+        .footer-social a:hover {
+            background: #ccfbf1;
+            color: #0f766e;
+            transform: translateY(-2px);
+        }
+
+        /* Mobile overlay */
+        .sidebar-overlay {
+            display: none;
+        }
+
+        @media (max-width: 767.98px) {
+            .doctor-sidebar {
+                transform: translateX(-100%);
+            }
+
+            .doctor-sidebar.sidebar-open {
+                transform: translateX(0);
+            }
+
+            .doctor-main {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .sidebar-toggle {
+                display: inline-flex;
+            }
+
+            .doctor-topbar {
+                padding: 10px 15px;
+            }
+
+            .doctor-topbar-subtitle {
+                font-size: 11px;
+            }
+
+            .sidebar-overlay.overlay-visible {
+                display: block;
+                position: fixed;
+                inset: 0;
+                z-index: 1040;
+                background: rgba(15, 23, 42, .55);
+            }
+        }
+    </style>
 </head>
+
 <body>
-  <nav class="sidebar sidebar col-md-2 navbar-dark fixed-top" style='background:#020202;'><br>
-    <p style="color: white;">HOSPITAL MANAGEMENT SYSTEM</p>
-    <p style="color : white;">DR.{{doctor.name}}</p>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    
-    <div class=" navbar-collapse " id="navbarNav">
-       
-      <ul class="nav flex-column" style='min-height:100vh;'>
-      
-        <li class="nav-item">
-            <a class="nav-link active" href="{% url 'doctorlogin' %}" id='ah' style='text-decoration:none;display: block;padding: 15px;color: white;transition: background-color 0.3s;'>
-                Dashboard
-            </a>
-        </li>
-        <li class="nav-item dropdown">
-            <a  class="nav-link dropdown-toggle" href="#"  id='ah' style='text-decoration:none;display: block;padding: 15px;color: white;transition: background-color 0.3s;' role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Appoiment
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="background-color: #020202;">
-                <a class="nav-link" href="{% url 'doctor_dashboard_view' %}" id='ah' style='text-decoration:none;display: block;padding: 15px;color: white;transition: background-color 0.3s;'>
-                    View Appoiment
-                </a>
-              </li>
-              <li class="nav-item dropdown">
-                <a  class="nav-link dropdown-toggle" href="#"  id='ah' style='text-decoration:none;display: block;padding: 15px;color: white;transition: background-color 0.3s;' role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Settinges
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="background-color: #020202;">
-                    <a class="nav-link" href="{% url 'doctorreset' %}" id='ah' style='text-decoration:none;display: block;padding: 15px;color: white;transition: background-color 0.3s;'>
-                    Reset Password
-                    </a>
-                  </li>
- 
-      <li class="nav-item">
-          <a class="nav-link" href="{% url 'logout' %}" id='ah' style='text-decoration:none;display: block;padding: 15px;color: white;transition: background-color 0.3s;'>
-            <i class="fas fa-power-off"></i> Logout
-          </a>
-      </li>
-    </ul>
-    </div>
-  </nav>
 
-<div class="container-fluid">
-  <div class="row ">
-    <main role="main" class=" ml-sm-auto col-lg-10 px-4">
-          {% block content %}
-          {% endblock %}
-      </main>
-  </div>
-</div>
+    <!-- Mobile sidebar overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
+    <!-- Sidebar -->
+    <aside class="doctor-sidebar" id="doctorSidebar">
 
-<!-- Your page content goes here -->
-<footer>
+        <div class="sidebar-brand">
+            <div class="brand-icon">
+                <i class="fas fa-hospital-alt"></i>
+            </div>
 
-    <p>
-      <a href="#" class="fa fa-facebook"></a>
-      <a href="#" class="fa fa-whatsapp"></a>
-      <a href="#" class="fa fa-instagram"></a>
-      <a href="#" class="fa fa-twitter"></a>
-    </p>
-  
-    <br>
-    <div class="container">
-      <div class="row">
-        <div class="col-md-12 col-sm-12">
-          <div style="color:#ffffff;" class="wow fadeInUp footer-copyright">
-            <p>&copy; 2023 Developed By Akhil </p>
-          </div>
+            <h5>HOSPITAL MANAGEMENT SYSTEM</h5>
+
+            <div class="doctor-profile">
+                <div class="doctor-profile-icon">
+                    <i class="fas fa-user-md"></i>
+                </div>
+
+                <div>
+                    <small>Logged in as</small>
+                    <strong>Dr. {{ doctor.name|default:"Doctor" }}</strong>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  </footer>
-  
 
+        <div class="sidebar-section-label">Main Menu</div>
+
+        <ul class="doctor-nav">
+
+            <!-- Dashboard -->
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'doctorlogin' %}">
+                    <i class="fas fa-th-large"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+
+            <!-- Appointments dropdown -->
+            <li class="nav-item">
+                <a class="nav-link"
+                   href="#appointmentMenu"
+                   data-toggle="collapse"
+                   role="button"
+                   aria-expanded="false"
+                   aria-controls="appointmentMenu">
+
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Appointments</span>
+                    <i class="fas fa-chevron-down menu-arrow"></i>
+                </a>
+
+                <div class="collapse" id="appointmentMenu">
+                    <div class="submenu">
+                        <a class="nav-link"
+                           href="{% url 'doctor_dashboard_view' %}">
+                            <i class="fas fa-list-ul"></i>
+                            <span>View Appointments</span>
+                        </a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Settings dropdown -->
+            <li class="nav-item">
+                <a class="nav-link"
+                   href="#settingsMenu"
+                   data-toggle="collapse"
+                   role="button"
+                   aria-expanded="false"
+                   aria-controls="settingsMenu">
+
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                    <i class="fas fa-chevron-down menu-arrow"></i>
+                </a>
+
+                <div class="collapse" id="settingsMenu">
+                    <div class="submenu">
+                        <a class="nav-link"
+                           href="{% url 'doctorreset' %}">
+                            <i class="fas fa-key"></i>
+                            <span>Reset Password</span>
+                        </a>
+                    </div>
+                </div>
+            </li>
+
+        </ul>
+
+        <div class="sidebar-section-label">Account</div>
+
+        <ul class="doctor-nav sidebar-bottom">
+            <li class="nav-item">
+                <a class="nav-link logout-link"
+                   href="{% url 'logout' %}">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </li>
+        </ul>
+
+    </aside>
+
+    <!-- Main area -->
+    <div class="doctor-main">
+
+        <header class="doctor-topbar">
+            <button type="button"
+                    class="sidebar-toggle"
+                    id="sidebarToggle"
+                    aria-label="Toggle navigation"
+                    aria-controls="doctorSidebar"
+                    aria-expanded="false">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <p class="doctor-topbar-title">Doctor Portal</p>
+
+            <span class="doctor-topbar-subtitle">
+                <i class="fas fa-shield-alt mr-1"></i>
+                Hospital Administration
+            </span>
+        </header>
+
+        <main class="doctor-content">
+            {% block content %}
+            {% endblock %}
+        </main>
+
+        <footer class="doctor-footer">
+            <div class="footer-social">
+                <a href="https://www.facebook.com/"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   aria-label="Facebook">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+
+                <a href="https://www.whatsapp.com/"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   aria-label="WhatsApp">
+                    <i class="fab fa-whatsapp"></i>
+                </a>
+
+                <a href="https://www.instagram.com/"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   aria-label="Instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+
+                <a href="https://www.twitter.com/"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   aria-label="Twitter">
+                    <i class="fab fa-twitter"></i>
+                </a>
+            </div>
+
+            <p>&copy; 2026 Hospital Management System. Developed by Akhil.</p>
+        </footer>
+
+    </div>
+
+    <!-- Load jQuery and Bootstrap only once -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const sidebar = document.getElementById('doctorSidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const toggle = document.getElementById('sidebarToggle');
+
+            // Mobile sidebar
+            function openSidebar() {
+                sidebar.classList.add('sidebar-open');
+                overlay.classList.add('overlay-visible');
+                toggle.setAttribute('aria-expanded', 'true');
+            }
+
+            function closeSidebar() {
+                sidebar.classList.remove('sidebar-open');
+                overlay.classList.remove('overlay-visible');
+                toggle.setAttribute('aria-expanded', 'false');
+            }
+
+            toggle.addEventListener('click', function () {
+                if (sidebar.classList.contains('sidebar-open')) {
+                    closeSidebar();
+                } else {
+                    openSidebar();
+                }
+            });
+
+            overlay.addEventListener('click', closeSidebar);
+
+            // Close mobile sidebar after selecting a navigation link.
+            document.querySelectorAll('.doctor-sidebar a').forEach(function (link) {
+                link.addEventListener('click', function () {
+                    if (
+                        window.innerWidth < 768 &&
+                        !this.hasAttribute('data-toggle')
+                    ) {
+                        closeSidebar();
+                    }
+                });
+            });
+
+            // Keep sidebar state correct after resizing.
+            window.addEventListener('resize', function () {
+                if (window.innerWidth >= 768) {
+                    closeSidebar();
+                }
+            });
+
+            // Update accessible dropdown state.
+            $('#appointmentMenu, #settingsMenu').on(
+                'show.bs.collapse',
+                function () {
+                    const trigger = document.querySelector(
+                        '[aria-controls="' + this.id + '"]'
+                    );
+
+                    if (trigger) {
+                        trigger.setAttribute('aria-expanded', 'true');
+                    }
+                }
+            );
+
+            $('#appointmentMenu, #settingsMenu').on(
+                'hide.bs.collapse',
+                function () {
+                    const trigger = document.querySelector(
+                        '[aria-controls="' + this.id + '"]'
+                    );
+
+                    if (trigger) {
+                        trigger.setAttribute('aria-expanded', 'false');
+                    }
+                }
+            );
+        });
+    </script>
 
 </body>
 </html>
